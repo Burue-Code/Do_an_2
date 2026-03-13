@@ -4,6 +4,7 @@ spring:
     username: your_db_user
     password: your_db_password
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: none
