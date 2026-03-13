@@ -1,0 +1,187 @@
+@startuml ERD_Movie_Streaming
+
+' Phông nền và thiết lập chung
+skinparam linetype ortho
+skinparam shadowing false
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+entity "ROLE" as ROLE {
+    * **RoleID** : Bigint <<PK>>
+    --
+    RoleName : Varchar(100)
+}
+
+entity "USERS" as USERS {
+    * **UserID** : Bigint <<PK>>
+    --
+    RoleID : Bigint <<FK>>
+    Username : Varchar(50)
+    PasswordHash : Varchar(255)
+    FullName : Varchar(100)
+    CreatedAt : Date
+}
+
+entity "SEARCH_HISTORY" as SEARCH_HISTORY {
+    * **HistoryID** : Bigint <<PK>>
+    --
+    UserID : Bigint <<FK>>
+    Keyword : Varchar(200)
+    CreatedAt : DateTime
+}
+
+entity "USERS_GENRE" as USERS_GENRE {
+    * **UserID** : Bigint <<PK, FK>>
+    * **GenreID** : Bigint <<PK, FK>>
+}
+
+entity "GENRE" as GENRE {
+    * **GenreID** : Bigint <<PK>>
+    --
+    GenreName : Varchar(100)
+}
+
+entity "COMMENTS" as COMMENTS {
+    * **CommentID** : Bigint <<PK>>
+    --
+    UserID : Bigint <<FK>>
+    MovieID : Bigint <<FK>>
+    Content : Text
+    CreatedAt : DateTime
+}
+
+entity "WATCH_LOGS" as WATCH_LOGS {
+    * **LogID** : Bigint <<PK>>
+    --
+    UserID : Bigint <<FK>>
+    MovieID : Bigint <<FK>>
+    EpisodeID : Bigint <<FK, N>>
+    DurationWatched : Int
+    Completed : Boolean
+    LastWatchedAt : DateTime
+}
+
+entity "RATINGS" as RATINGS {
+    * **RatingID** : Bigint <<PK>>
+    --
+    UserID : Bigint <<FK>>
+    MovieID : Bigint <<FK>>
+    RatingValue : Int
+    CreatedAt : DateTime
+}
+
+entity "LIKES" as LIKES {
+    * **UserID** : Bigint <<PK, FK>>
+    * **MovieID** : Bigint <<PK, FK>>
+    --
+    CreatedAt : DateTime
+}
+
+entity "WATCHLIST_ITEMS" as WATCHLIST_ITEMS {
+    * **WatchlistID** : Bigint <<PK>>
+    --
+    UserID : Bigint <<FK>>
+    MovieID : Bigint <<FK>>
+    CreatedAt : DateTime
+}
+
+entity "EPISODES" as EPISODES {
+    * **EpisodeID** : Bigint <<PK>>
+    --
+    MovieID : Bigint <<FK>>
+    EpisodeNumber : Int
+    VideoURL : Varchar(500)
+    Release : Datetime
+}
+
+entity "MOVIES" as MOVIES {
+    * **MovieID** : Bigint <<PK>>
+    --
+    Title : Varchar(200)
+    Description : Text
+    ReleaseYear : Int
+    CreatedAt : Date
+    Poster : Varchar(500)
+    Duration : Int
+    Status : Varchar(50)
+    TotalEpisodes : Int
+    RatingScore : Float
+    RatingCount : Int
+    MovieType : Int
+}
+
+entity "MOVIES_GENRE" as MOVIES_GENRE {
+    * **MovieID** : Bigint <<PK, FK>>
+    * **GenreID** : Bigint <<PK, FK>>
+}
+
+entity "SCHEDULES" as SCHEDULES {
+    * **ScheduleID** : Bigint <<PK>>
+    --
+    MovieID : Bigint <<FK>>
+    DayOfWeek : Int
+    AirTime : Time
+    Note : Varchar(200) <<N>>
+}
+
+entity "MOVIES_DIRECTORS" as MOVIES_DIRECTORS {
+    * **MovieID** : Bigint <<PK, FK>>
+    * **DirectorID** : Bigint <<PK, FK>>
+}
+
+entity "DIRECTORS" as DIRECTORS {
+    * **DirectorID** : Bigint <<PK>>
+    --
+    FullName : Varchar(200)
+    BirthDate : Date
+    Awards : Text
+    Biography : Text <<N>>
+}
+
+entity "MOVIES_ACTORS" as MOVIES_ACTORS {
+    * **MovieID** : Bigint <<PK, FK>>
+    * **ActorID** : Bigint <<PK, FK>>
+    --
+    CharacterName : Varchar(200)
+}
+
+entity "ACTORS" as ACTORS {
+    * **ActorID** : Bigint <<PK>>
+    --
+    FullName : Varchar(200)
+    Gender : Varchar(20)
+    BirthDate : Date
+    Nationality : Varchar(100)
+    Biography : Text <<N>>
+    ImageURL : Varchar(500)
+}
+
+' Relationships
+ROLE ||--o{ USERS
+USERS ||--o{ SEARCH_HISTORY
+USERS ||--o{ USERS_GENRE
+GENRE ||--o{ USERS_GENRE
+USERS ||--o{ COMMENTS
+MOVIES ||--o{ COMMENTS
+USERS ||--o{ WATCH_LOGS
+MOVIES ||--o{ WATCH_LOGS
+EPISODES ||--o{ WATCH_LOGS
+USERS ||--o{ RATINGS
+MOVIES ||--o{ RATINGS
+USERS ||--o{ LIKES
+MOVIES ||--o{ LIKES
+USERS ||--o{ WATCHLIST_ITEMS
+MOVIES ||--o{ WATCHLIST_ITEMS
+MOVIES ||--o{ EPISODES
+MOVIES ||--o{ MOVIES_GENRE
+GENRE ||--o{ MOVIES_GENRE
+MOVIES ||--o{ SCHEDULES
+MOVIES ||--o{ MOVIES_DIRECTORS
+DIRECTORS ||--o{ MOVIES_DIRECTORS
+MOVIES ||--o{ MOVIES_ACTORS
+ACTORS ||--o{ MOVIES_ACTORS
+
+@enduml
