@@ -9,8 +9,8 @@ import com.example.movierecommendation.role.entity.Role;
 import com.example.movierecommendation.role.repository.RoleRepository;
 import com.example.movierecommendation.security.JwtTokenProvider;
 import com.example.movierecommendation.security.SecurityUtils;
-import com.example.movierecommendation.user.dto.UserProfileResponse;
 import com.example.movierecommendation.user.entity.User;
+import com.example.movierecommendation.user.mapper.UserMapper;
 import com.example.movierecommendation.user.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,17 +27,20 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserMapper userMapper;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder,
-                           JwtTokenProvider jwtTokenProvider) {
+                           JwtTokenProvider jwtTokenProvider,
+                           UserMapper userMapper) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -79,11 +82,9 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
-        UserProfileResponse profile = toUserProfile(user);
-
         AuthResponse response = new AuthResponse();
         response.setAccessToken(token);
-        response.setUser(profile);
+        response.setUser(userMapper.toUserProfileResponse(user));
         return response;
     }
 
@@ -105,23 +106,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserProfileResponse getCurrentUserProfile() {
+    public com.example.movierecommendation.user.dto.UserProfileResponse getCurrentUserProfile() {
         String username = SecurityUtils.getCurrentUsername()
                 .orElseThrow(() -> new IllegalStateException("No authenticated user"));
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
-        return toUserProfile(user);
-    }
-
-    private UserProfileResponse toUserProfile(User user) {
-        UserProfileResponse response = new UserProfileResponse();
-        response.setId(user.getId());
-        response.setUsername(user.getUsername());
-        response.setFullName(user.getFullName());
-        response.setRole(user.getRole() != null ? user.getRole().getName() : null);
-        return response;
+        return userMapper.toUserProfileResponse(user);
     }
 }
 
