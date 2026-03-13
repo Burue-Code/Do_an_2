@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: movie-recommendation-system
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.example.movierecommendation: DEBUG
+
