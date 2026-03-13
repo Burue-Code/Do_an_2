@@ -1,0 +1,62 @@
+# === OS / Editor ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+.vscode/
+.idea/
+*.iml
+
+# Cursor / editor state
+.cursor/
+
+# === Env / secrets ===
+.env
+.env.*
+!.env.example
+
+*.key
+*.pem
+credentials.json
+
+# === Office docs (không commit file Word như SRS) ===
+*.docx
+*.doc
+
+# === Logs ===
+*.log
+logs/
+
+# === Java / Spring Boot (Maven/Gradle) ===
+backend/target/
+**/target/
+
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven wrapper download cache (keep wrapper scripts)
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# === Node / Next.js (sau này có frontend/) ===
+node_modules/
+frontend/node_modules/
+
+.next/
+frontend/.next/
+out/
+frontend/out/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Testing / coverage ===
+coverage/
+
+# === Local database / dumps (if any) ===
+*.sqlite
+*.db
+*.sql.bak
