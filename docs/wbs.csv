@@ -1,0 +1,124 @@
+﻿WBS_ID,Parent_WBS_ID,Giai_doan,Cong_viec,Mo_ta_chi_tiet,Dau_ra_mong_doi,Vai_tro_phu_trach,Phu_thuoc,Uoc_tinh_ngay_cong,Do_uu_tien
+1,,Khởi động dự án,Khởi tạo dự án,"Xác định mục tiêu, phạm vi, stack công nghệ Java Spring Boot + Next.js + MySQL, danh sách thành viên và cách làm việc.","Project charter, kế hoạch tổng quan",PM/BA/Tech Lead,,1,Cao
+1.1,1,Khởi động dự án,Rà soát yêu cầu nghiệp vụ,"Đọc lại SRS, Use Case, ERD, Activity, Sequence để chốt phạm vi triển khai bản đầu tiên.",Danh sách yêu cầu đã chốt,BA/Tech Lead,1,1,Cao
+1.2,1,Khởi động dự án,Chốt phạm vi MVP,"Xác định chức năng bắt buộc cho phiên bản đầu: đăng ký, đăng nhập, xem phim, tìm kiếm, thích, lưu phim, bình luận, đánh giá, gợi ý, admin CRUD.",Backlog MVP,PM/BA/Product Owner,1.1,1,Cao
+1.3,1,Khởi động dự án,Thiết lập cách quản lý công việc,"Thiết lập board công việc, quy tắc branch, commit convention, code review, Definition of Done.",Quy trình làm việc nhóm,PM/Tech Lead,1.2,0.5,Trung bình
+2,,Chuẩn bị môi trường,Thiết lập môi trường phát triển,"Chuẩn bị JDK, Maven/Gradle, Node.js, pnpm/npm, MySQL, IDE, Postman/Bruno, Docker nếu có.",Máy dev sẵn sàng,Toàn đội,1.2,1,Cao
+2.1,2,Chuẩn bị môi trường,Tạo monorepo hoặc repo riêng,"Khởi tạo cấu trúc thư mục cho backend, frontend, database, docs, scripts.",Repository khởi tạo,Tech Lead,2,0.5,Cao
+2.2,2,Chuẩn bị môi trường,Thiết lập backend Spring Boot,"Tạo project Spring Boot, cấu hình package base, application.yml theo dev/test/prod.",Backend chạy được bản rỗng,Backend Dev,2.1,1,Cao
+2.3,2,Chuẩn bị môi trường,Thiết lập frontend Next.js,"Tạo project Next.js App Router, cấu hình TypeScript, ESLint, Prettier, alias import.",Frontend chạy được bản rỗng,Frontend Dev,2.1,1,Cao
+2.4,2,Chuẩn bị môi trường,Thiết lập cơ sở dữ liệu MySQL,"Tạo schema database, cấu hình connection local, user/password, timezone, charset UTF-8.",MySQL sẵn sàng kết nối,Backend Dev/DBA,2,0.5,Cao
+2.5,2,Chuẩn bị môi trường,Thiết lập Flyway,"Chuẩn bị migration versioned để quản lý schema, seed cơ bản và rollback strategy.",Cơ chế migration hoạt động,Backend Dev,2.4,1,Cao
+2.6,2,Chuẩn bị môi trường,Thiết lập CI cơ bản,"Tạo workflow lint, build backend/frontend, chạy test cơ bản mỗi pull request.",Pipeline CI cơ bản,Tech Lead/DevOps,"2.2,2.3",1,Trung bình
+3,,Phân tích và thiết kế,Hoàn thiện tài liệu phân tích,"Đóng gói tài liệu SRS, Use Case, WBS, ERD, Activity và Sequence để làm chuẩn triển khai.",Bộ tài liệu thống nhất,BA/Tech Lead,1.2,1,Cao
+3.1,3,Phân tích và thiết kế,Thiết kế kiến trúc hệ thống,"Xác định kiến trúc client-server, phân lớp controller-service-repository, auth flow, media delivery, recommendation flow.",Tài liệu kiến trúc,Tech Lead,3,1,Cao
+3.2,3,Phân tích và thiết kế,Thiết kế module backend,"Tách các module: auth, users, movies, genres, comments, ratings, likes, watchlist, history, recommendation, admin.",Danh sách module backend,Tech Lead/Backend Dev,3.1,1,Cao
+3.3,3,Phân tích và thiết kế,Thiết kế cấu trúc frontend,"Thiết kế route App Router, layout, auth guard, feature folders, shared UI components.",Cấu trúc frontend chi tiết,Tech Lead/Frontend Dev,3.1,1,Cao
+3.4,3,Phân tích và thiết kế,Thiết kế API contract,"Xác định endpoint, request/response, mã lỗi, phân trang, xác thực JWT/cookie, quy tắc upload poster/video.",Tài liệu API,Tech Lead/Backend Dev,"3.2,3.3",2,Cao
+3.5,3,Phân tích và thiết kế,Thiết kế mô hình dữ liệu,"Chuẩn hóa từ ERD sang bảng MySQL, khóa chính/ngoại, index, unique, soft delete nếu cần.",Schema vật lý,Backend Dev/DBA,3.1,1.5,Cao
+3.6,3,Phân tích và thiết kế,Thiết kế chiến lược gợi ý phim,"Định nghĩa logic recommendation v1 dựa trên thể loại yêu thích, lịch sử xem, lượt thích, đánh giá, fallback phim phổ biến.",Rule recommendation v1,Tech Lead/Backend Dev,"3.2,3.5",1.5,Cao
+4,,Thiết kế và tạo CSDL,Triển khai database schema,Chuyển ERD sang migration MySQL chi tiết.,Schema database hoàn chỉnh,Backend Dev/DBA,3.5,2,Cao
+4.1,4,Thiết kế và tạo CSDL,Tạo bảng ROLE,"Lưu vai trò người dùng như ADMIN, USER.",Migration bảng ROLE,Backend Dev/DBA,4,0.5,Cao
+4.2,4,Thiết kế và tạo CSDL,Tạo bảng USERS,"Lưu tài khoản, thông tin cá nhân, hash mật khẩu, role.",Migration bảng USERS,Backend Dev/DBA,4,0.5,Cao
+4.3,4,Thiết kế và tạo CSDL,Tạo bảng GENRE,Lưu danh mục thể loại phim.,Migration bảng GENRE,Backend Dev/DBA,4,0.5,Cao
+4.4,4,Thiết kế và tạo CSDL,Tạo bảng USERS_GENRE,Lưu sở thích thể loại theo người dùng.,Migration bảng USERS_GENRE,Backend Dev/DBA,4,0.5,Cao
+4.5,4,Thiết kế và tạo CSDL,Tạo bảng MOVIES,"Lưu dữ liệu phim: tiêu đề, mô tả, poster, thời lượng, trạng thái, điểm rating.",Migration bảng MOVIES,Backend Dev/DBA,4,0.5,Cao
+4.6,4,Thiết kế và tạo CSDL,Tạo bảng MOVIES_GENRE,Liên kết nhiều-nhiều giữa phim và thể loại.,Migration bảng MOVIES_GENRE,Backend Dev/DBA,4,0.5,Cao
+4.7,4,Thiết kế và tạo CSDL,Tạo bảng EPISODES,Lưu tập phim đối với phim bộ.,Migration bảng EPISODES,Backend Dev/DBA,4,0.5,Cao
+4.8,4,Thiết kế và tạo CSDL,Tạo bảng ACTORS,Lưu diễn viên.,Migration bảng ACTORS,Backend Dev/DBA,4,0.5,Cao
+4.9,4,Thiết kế và tạo CSDL,Tạo bảng MOVIES_ACTORS,Liên kết phim và diễn viên.,Migration bảng MOVIES_ACTORS,Backend Dev/DBA,4,0.5,Cao
+4.10,4,Thiết kế và tạo CSDL,Tạo bảng DIRECTORS,Lưu đạo diễn.,Migration bảng DIRECTORS,Backend Dev/DBA,4,0.5,Cao
+4.11,4,Thiết kế và tạo CSDL,Tạo bảng MOVIES_DIRECTORS,Liên kết phim và đạo diễn.,Migration bảng MOVIES_DIRECTORS,Backend Dev/DBA,4,0.5,Cao
+4.12,4,Thiết kế và tạo CSDL,Tạo bảng COMMENTS,Lưu bình luận phim.,Migration bảng COMMENTS,Backend Dev/DBA,4,0.5,Cao
+4.13,4,Thiết kế và tạo CSDL,Tạo bảng RATINGS,Lưu đánh giá phim theo người dùng.,Migration bảng RATINGS,Backend Dev/DBA,4,0.5,Cao
+4.14,4,Thiết kế và tạo CSDL,Tạo bảng LIKES,Lưu lượt thích phim.,Migration bảng LIKES,Backend Dev/DBA,4,0.5,Cao
+4.15,4,Thiết kế và tạo CSDL,Tạo bảng WATCH_LOGS,Lưu lịch sử và tiến độ xem phim.,Migration bảng WATCH_LOGS,Backend Dev/DBA,4,0.5,Cao
+4.16,4,Thiết kế và tạo CSDL,Tạo bảng SEARCH_HISTORY,Lưu lịch sử tìm kiếm.,Migration bảng SEARCH_HISTORY,Backend Dev/DBA,4,0.5,Cao
+4.17,4,Thiết kế và tạo CSDL,Tạo bảng SCHEDULES,Lưu lịch chiếu/thời gian phát hành.,Migration bảng SCHEDULES,Backend Dev/DBA,4,0.5,Cao
+4.18,4,Thiết kế và tạo CSDL,Tạo index và ràng buộc,"Bổ sung index cho tìm kiếm, join, recommendation; unique constraint cho likes/ratings/users.",Tối ưu truy vấn cơ bản,Backend Dev/DBA,4.1-4.17,1,Cao
+4.19,4,Thiết kế và tạo CSDL,Seed dữ liệu mẫu,"Sinh dữ liệu mẫu thể loại, phim, tài khoản admin, người dùng test, rating và watch logs demo.",Dữ liệu demo ban đầu,Backend Dev/DBA,4.18,1,Trung bình
+5,,Phát triển backend nền tảng,Xây dựng khung backend,Tạo các thành phần dùng chung cho hệ thống Spring Boot.,Khung backend sẵn sàng phát triển chức năng,Backend Dev,"2.2,3.2,4",2,Cao
+5.1,5,Phát triển backend nền tảng,Cấu hình security,"Thiết lập Spring Security, mã hóa mật khẩu BCrypt, phân quyền USER/ADMIN, CORS, exception handling.",Security base,Backend Dev,5,1.5,Cao
+5.2,5,Phát triển backend nền tảng,Cấu hình auth token/session,"Chọn JWT hoặc cookie-based auth, refresh token nếu dùng, filter xác thực.",Cơ chế xác thực hoàn chỉnh,Backend Dev,5.1,1.5,Cao
+5.3,5,Phát triển backend nền tảng,Tạo base response và error code,"Chuẩn hóa API response, lỗi validate, lỗi business, lỗi server.",Chuẩn phản hồi API,Backend Dev,5,1,Trung bình
+5.4,5,Phát triển backend nền tảng,Tạo lớp dùng chung,"BaseEntity, auditing createdAt/updatedAt, mapper, pagination helper, constants.",Core common package,Backend Dev,5,1,Trung bình
+5.5,5,Phát triển backend nền tảng,Tạo tài liệu OpenAPI,Sinh Swagger/OpenAPI cho endpoint backend.,Swagger UI hoạt động,Backend Dev,5.3,0.5,Trung bình
+6,,Phát triển backend chức năng người dùng,Xây dựng các API cho người dùng,Triển khai nghiệp vụ phía backend cho user/public.,Các API user/public hoàn chỉnh,Backend Dev,5,7,Cao
+6.1,6,Phát triển backend chức năng người dùng,Module Auth,"API đăng ký, đăng nhập, đăng xuất, lấy profile, đổi mật khẩu/cập nhật tài khoản.",API auth hoạt động,Backend Dev,"5.1,5.2",2,Cao
+6.2,6,Phát triển backend chức năng người dùng,Module Movies public,"API danh sách phim, chi tiết phim, top phim, phim đánh giá cao, phim đang chiếu, phim đã hoàn thành.",API movie public,Backend Dev,"4.5,4.17",2,Cao
+6.3,6,Phát triển backend chức năng người dùng,Module Search,"API tìm kiếm phim theo từ khóa, lọc theo thể loại, lưu SEARCH_HISTORY khi đã đăng nhập.",API search,Backend Dev,"6.2,4.16",1.5,Cao
+6.4,6,Phát triển backend chức năng người dùng,Module Watch logs,"API lưu lịch sử xem, tiến độ xem, tiếp tục xem, lấy lịch sử xem.",API watch history,Backend Dev,"6.2,4.15",1.5,Cao
+7,,Phát triển backend tương tác phim,Xây dựng các API tương tác,"Triển khai like, watchlist, comments, ratings, favorite genres.",API tương tác hoạt động,Backend Dev,6,5,Cao
+7.1,7,Phát triển backend tương tác phim,Module Likes,"API thích/bỏ thích phim, chống trùng like.",API likes,Backend Dev,4.14,1,Cao
+7.2,7,Phát triển backend tương tác phim,Module Watchlist,"API lưu phim theo dõi, bỏ lưu, danh sách theo dõi. Nếu chưa có bảng thì tạo migration watchlist riêng.",API watchlist,Backend Dev,4,1.5,Cao
+7.3,7,Phát triển backend tương tác phim,Module Comments,"API thêm, sửa, xóa, lấy danh sách bình luận theo phim.",API comments,Backend Dev,4.12,1.5,Cao
+7.4,7,Phát triển backend tương tác phim,Module Ratings,"API tạo/cập nhật rating, tính điểm trung bình và số lượng rating của phim.",API ratings,Backend Dev,4.13,1,Cao
+7.5,7,Phát triển backend tương tác phim,Module Favorite Genres,API lấy/cập nhật thể loại yêu thích của người dùng.,API sở thích thể loại,Backend Dev,"4.3,4.4",1,Cao
+8,,Phát triển backend gợi ý phim,Xây dựng recommendation service,Triển khai logic gợi ý phim cá nhân hóa.,API recommendation hoạt động,Backend Dev,"6,7,3.6",3,Cao
+8.1,8,Phát triển backend gợi ý phim,Thu thập dữ liệu đầu vào,"Lấy genre yêu thích, watch logs, likes, ratings, movie genres, popularity score.",Bộ dữ liệu đầu vào,Backend Dev,8,0.5,Cao
+8.2,8,Phát triển backend gợi ý phim,Xây dựng thuật toán score,Thiết kế trọng số cho từng tín hiệu hành vi và thể loại.,Hàm tính điểm recommendation,Backend Dev,8.1,1,Cao
+8.3,8,Phát triển backend gợi ý phim,Triển khai fallback logic,"Nếu user mới/chưa đủ dữ liệu thì trả về phim phổ biến, top rating hoặc theo thể loại nổi bật.",Fallback recommendation,Backend Dev,8.2,0.5,Cao
+8.4,8,Phát triển backend gợi ý phim,Tối ưu truy vấn gợi ý,"Giảm số lượng query, cache nếu cần, tránh N+1.",Recommendation tối ưu cơ bản,Backend Dev,8.2,1,Trung bình
+9,,Phát triển backend admin,Xây dựng các API quản trị,Triển khai CRUD và thống kê cho admin.,API admin hoàn chỉnh,Backend Dev,"5,4",6,Cao
+9.1,9,Phát triển backend admin,Admin quản lý phim,"CRUD phim, cập nhật poster, trạng thái, thời lượng, mô tả, loại phim lẻ/bộ.",API movie admin,Backend Dev,4.5,1.5,Cao
+9.2,9,Phát triển backend admin,Admin quản lý thể loại,CRUD thể loại.,API genre admin,Backend Dev,4.3,0.5,Cao
+9.3,9,Phát triển backend admin,Admin gán thể loại cho phim,API cập nhật quan hệ movie-genre.,API movie-genre admin,Backend Dev,4.6,0.5,Cao
+9.4,9,Phát triển backend admin,Admin quản lý người dùng,"API xem danh sách user, khóa/mở khóa tài khoản, reset thông tin cơ bản nếu cần.",API user admin,Backend Dev,4.2,1,Cao
+9.5,9,Phát triển backend admin,Admin quản lý lịch chiếu,CRUD lịch chiếu/thời gian đăng phim.,API schedules admin,Backend Dev,4.17,0.5,Cao
+9.6,9,Phát triển backend admin,Admin quản lý tập phim,CRUD episodes cho phim bộ.,API episodes admin,Backend Dev,4.7,0.75,Cao
+9.7,9,Phát triển backend admin,Admin quản lý diễn viên và đạo diễn,CRUD actors/directors và gán cho phim.,API actors/directors admin,Backend Dev,4.8-4.11,1,Trung bình
+9.8,9,Phát triển backend admin,Admin thống kê xu hướng phim,"API thống kê lượt xem, lượt thích, rating, top thể loại, top phim.",API dashboard admin,Backend Dev,"6.4,7.1,7.4",1.25,Cao
+10,,Phát triển frontend nền tảng,Xây dựng khung frontend,"Thiết lập giao diện gốc, theme, state, gọi API, auth guard.",Khung frontend sẵn sàng,Frontend Dev,"2.3,3.3,3.4",3,Cao
+10.1,10,Phát triển frontend nền tảng,Thiết kế layout người dùng,"Header, footer, navbar, trang chủ, responsive base.",Layout user,Frontend Dev,10,1,Cao
+10.2,10,Phát triển frontend nền tảng,Thiết kế layout admin,"Sidebar admin, dashboard shell, guard phân quyền.",Layout admin,Frontend Dev,10,1,Cao
+10.3,10,Phát triển frontend nền tảng,Thiết lập gọi API,"Tạo HTTP client, interceptors, xử lý auth token, refresh session nếu có.",API client dùng chung,Frontend Dev,10,0.75,Cao
+10.4,10,Phát triển frontend nền tảng,Thiết lập state management,"Quản lý auth state, user profile, filters, xem tiếp.",Store/context cơ bản,Frontend Dev,10.3,0.75,Trung bình
+10.5,10,Phát triển frontend nền tảng,Tạo thư viện UI dùng chung,"Buttons, forms, dialogs, table, pagination, cards, rating stars, video player wrapper.",Shared components,Frontend Dev,10,1,Cao
+11,,Phát triển frontend người dùng,Xây dựng giao diện cho user/public,Triển khai các màn hình phía người dùng.,Luồng người dùng hoàn chỉnh,Frontend Dev,"10,6,7,8",8,Cao
+11.1,11,Phát triển frontend người dùng,Trang đăng ký/đăng nhập,"Form đăng ký, đăng nhập, validate client, thông báo lỗi.",Màn auth,Frontend Dev,6.1,1,Cao
+11.2,11,Phát triển frontend người dùng,Trang chủ,"Banner, phim nổi bật, phim đang chiếu, top phim, gợi ý phim.",Home page,Frontend Dev,"6.2,8",1.5,Cao
+11.3,11,Phát triển frontend người dùng,Trang thể loại,Danh sách thể loại và phim theo thể loại.,Genre pages,Frontend Dev,6.2,0.75,Cao
+11.4,11,Phát triển frontend người dùng,Trang chi tiết phim,"Hiển thị mô tả, poster, rating, comments, actors, directors, lịch chiếu.",Movie detail page,Frontend Dev,"6.2,7.3,7.4",1.5,Cao
+11.5,11,Phát triển frontend người dùng,Trang xem phim,"Video player, chọn tập phim, lưu tiến độ, continue watching.",Watch page,Frontend Dev,6.4,1.5,Cao
+11.6,11,Phát triển frontend người dùng,Trang lịch sử xem,"Danh sách phim đã xem, thời điểm xem, tiến độ.",History page,Frontend Dev,6.4,0.75,Cao
+11.7,11,Phát triển frontend người dùng,Trang theo dõi / phim đã lưu,"Danh sách watchlist, xóa khỏi danh sách.",Watchlist page,Frontend Dev,7.2,0.5,Cao
+11.8,11,Phát triển frontend người dùng,Trang tài khoản,Cập nhật thông tin tài khoản và sở thích thể loại.,Account page,Frontend Dev,"6.1,7.5",0.75,Cao
+11.9,11,Phát triển frontend người dùng,Tìm kiếm và bộ lọc,"Thanh tìm kiếm, trang kết quả, lọc theo thể loại/trạng thái/rating.",Search UI,Frontend Dev,6.3,0.75,Cao
+11.10,11,Phát triển frontend người dùng,Tương tác phim,"UI like, rating, comments, lưu phim.",Interaction UI,Frontend Dev,"7.1,7.2,7.3,7.4",1,Cao
+12,,Phát triển frontend admin,Xây dựng giao diện admin,Triển khai trang quản trị cho toàn bộ chức năng admin.,Luồng admin hoàn chỉnh,Frontend Dev,"10.2,9",6,Cao
+12.1,12,Phát triển frontend admin,Dashboard thống kê,"Hiển thị top phim, top thể loại, lượt xem, rating tổng quan.",Admin dashboard,Frontend Dev,9.8,1,Cao
+12.2,12,Phát triển frontend admin,Trang quản lý phim,"Bảng danh sách phim, form thêm/sửa, upload poster, gán thể loại.",Admin movie page,Frontend Dev,"9.1,9.3",1.5,Cao
+12.3,12,Phát triển frontend admin,Trang quản lý thể loại,"Danh sách, thêm, sửa, xóa thể loại.",Admin genre page,Frontend Dev,9.2,0.75,Cao
+12.4,12,Phát triển frontend admin,Trang quản lý người dùng,"Danh sách user, khóa/mở khóa, xem vai trò.",Admin user page,Frontend Dev,9.4,0.75,Cao
+12.5,12,Phát triển frontend admin,Trang quản lý lịch chiếu,Form thêm/sửa lịch chiếu.,Admin schedule page,Frontend Dev,9.5,0.5,Trung bình
+12.6,12,Phát triển frontend admin,Trang quản lý tập phim,CRUD episodes cho phim bộ.,Admin episode page,Frontend Dev,9.6,0.75,Trung bình
+12.7,12,Phát triển frontend admin,Trang quản lý diễn viên/đạo diễn,CRUD actors/directors và liên kết phim.,Admin actor/director page,Frontend Dev,9.7,0.75,Trung bình
+13,,Tích hợp và hoàn thiện,Tích hợp fullstack,"Kết nối frontend với backend và database, xử lý bug tích hợp.",Hệ thống chạy end-to-end,Toàn đội,"6,7,8,9,11,12",4,Cao
+13.1,13,Tích hợp và hoàn thiện,Kết nối auth end-to-end,Đảm bảo flow đăng ký/đăng nhập/đăng xuất/guard hoạt động xuyên suốt.,Auth flow hoàn chỉnh,Frontend Dev/Backend Dev,"6.1,11.1",0.75,Cao
+13.2,13,Tích hợp và hoàn thiện,Kết nối movie pages,"Tất cả trang danh sách, chi tiết, xem phim, lịch sử, watchlist hoạt động với API thật.",Movie flow hoàn chỉnh,Frontend Dev/Backend Dev,"6.2,6.4,7.2,11",1.5,Cao
+13.3,13,Tích hợp và hoàn thiện,Kết nối recommendation,"Kiểm tra API gợi ý, fallback, hiển thị đúng trên trang chủ/trang đề xuất.",Recommendation flow hoàn chỉnh,Frontend Dev/Backend Dev,"8,11.2",0.75,Cao
+13.4,13,Tích hợp và hoàn thiện,Kết nối admin,Tích hợp các trang CRUD admin với API.,Admin flow hoàn chỉnh,Frontend Dev/Backend Dev,"9,12",1,Cao
+14,,Kiểm thử,Kiểm thử hệ thống,"Thực hiện kiểm thử đơn vị, tích hợp, giao diện và nghiệp vụ.",Báo cáo kiểm thử,QA/Toàn đội,13,6,Cao
+14.1,14,Kiểm thử,Viết test backend,"Unit test service quan trọng: auth, rating, recommendation.",Bộ test backend,Backend Dev,"6,7,8",1.5,Cao
+14.2,14,Kiểm thử,Viết test frontend,"Test component/form chính, kiểm tra validate và call API mock.",Bộ test frontend,Frontend Dev,"11,12",1,Trung bình
+14.3,14,Kiểm thử,Kiểm thử API bằng Postman/Bruno,Tạo collection kiểm thử các endpoint chính.,API test collection,QA/Backend Dev,13,1,Cao
+14.4,14,Kiểm thử,Kiểm thử nghiệp vụ theo Use Case,Chạy test case theo 20 use case đã đặc tả.,Báo cáo UAT nội bộ,QA/BA,13,1.5,Cao
+14.5,14,Kiểm thử,Kiểm thử hiệu năng cơ bản,"Đo phản hồi tìm kiếm < 2 giây, thử nhiều người dùng truy cập đồng thời ở mức mô phỏng.",Báo cáo hiệu năng cơ bản,QA/Backend Dev,13,1,Trung bình
+14.6,14,Kiểm thử,Sửa lỗi sau kiểm thử,Fix bug backend/frontend/database sau vòng test.,Danh sách bug đã xử lý,Toàn đội,14.1-14.5,1,Cao
+15,,Triển khai,Đóng gói và triển khai hệ thống,Chuẩn bị môi trường staging/production.,Phiên bản triển khai được,DevOps/Toàn đội,14,3,Cao
+15.1,15,Triển khai,Chuẩn bị môi trường server,"Cấu hình VPS/server, domain, SSL, reverse proxy, MySQL production.",Hạ tầng sẵn sàng,DevOps,15,1,Cao
+15.2,15,Triển khai,Build và deploy backend,"Build jar, cấu hình profile prod, log, biến môi trường.",Backend production,Backend Dev/DevOps,15.1,0.75,Cao
+15.3,15,Triển khai,Build và deploy frontend,"Build Next.js production, cấu hình env, image optimization, domain.",Frontend production,Frontend Dev/DevOps,15.1,0.75,Cao
+15.4,15,Triển khai,Chạy migration và seed production,Áp dụng Flyway và tạo tài khoản admin ban đầu.,Database production,Backend Dev/DBA,15.1,0.5,Cao
+15.5,15,Triển khai,Smoke test sau triển khai,Kiểm tra các luồng chính sau deploy.,Biên bản nghiệm thu nội bộ,QA/Toàn đội,"15.2,15.3,15.4",0.5,Cao
+16,,Tài liệu và bàn giao,Hoàn thiện hồ sơ dự án,Chuẩn bị tài liệu phục vụ đồ án và vận hành.,Bộ tài liệu bàn giao,Toàn đội,15,3,Cao
+16.1,16,Tài liệu và bàn giao,Cập nhật tài liệu SRS cuối cùng,Đồng bộ SRS theo phiên bản đã triển khai.,SRS final,BA,15,0.5,Cao
+16.2,16,Tài liệu và bàn giao,Viết tài liệu hướng dẫn cài đặt,Cách chạy backend/frontend/database trên máy mới.,Installation guide,Tech Lead,15,0.5,Cao
+16.3,16,Tài liệu và bàn giao,Viết tài liệu hướng dẫn sử dụng,Hướng dẫn user và admin sử dụng hệ thống.,User manual,BA/Frontend Dev,15,0.75,Trung bình
+16.4,16,Tài liệu và bàn giao,Chuẩn bị slide/demo,"Chuẩn bị kịch bản demo, dữ liệu demo, video nếu cần.",Bộ demo bảo vệ đồ án,Toàn đội,15,0.75,Cao
+16.5,16,Tài liệu và bàn giao,Tổng kết và rút kinh nghiệm,"Đánh giá phạm vi hoàn thành, bug còn lại, hướng phát triển tiếp theo.",Biên bản tổng kết,PM/Toàn đội,16.1-16.4,0.5,Thấp
+17,,Hỗ trợ vibe coding,Chuẩn bị tài nguyên hỗ trợ code nhanh,Thiết lập các tài nguyên để AI/code assistant hỗ trợ tốt hơn trong quá trình lập trình.,Bộ tài nguyên vibe coding,Tech Lead,"3,5,10",2.5,Trung bình
+17.1,17,Hỗ trợ vibe coding,Tạo file AGENTS.md,"Mô tả kiến trúc, quy ước đặt tên, cách thêm module mới, checklist code review.",AGENTS.md,Tech Lead,17,0.5,Trung bình
+17.2,17,Hỗ trợ vibe coding,Tạo prompt/context cho AI,"Viết prompt theo feature: auth, movies, admin, recommendation.",Prompt templates,Tech Lead,17,0.5,Trung bình
+17.3,17,Hỗ trợ vibe coding,Chuẩn hóa OpenAPI và DTO,Đảm bảo backend contract rõ ràng để AI/frontend code bám theo.,OpenAPI contract ổn định,Backend Dev,"5.5,17",0.75,Trung bình
+17.4,17,Hỗ trợ vibe coding,Tạo seed data phong phú,Sinh dữ liệu demo để AI/manual test dễ kiểm tra các flow thực tế.,Seed demo nâng cao,Backend Dev,4.19,0.75,Trung bình
