@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { getPosterUrl } from '@/lib/image';
 import type { MovieDetail as MovieDetailType } from '@/features/movie/types';
 import { CommentList } from './comment-list';
+import { RatingStars } from './rating-stars';
 
 interface MovieDetailProps {
   movie: MovieDetailType;
@@ -49,16 +50,11 @@ export function MovieDetail({ movie }: MovieDetailProps) {
             <span className="movie-detail-type-badge">{movieTypeLabel}</span>
           )}
           <h1 className="movie-detail-title">{movie.title}</h1>
-          <div className="movie-detail-rating-row" aria-label={`Điểm đánh giá: ${formatRating(movie.ratingScore ?? 0)} trên 5`}>
-            <span className="movie-detail-rating">
-              {formatRating(movie.ratingScore ?? 0)} ★
-            </span>
-            {movie.ratingCount != null && movie.ratingCount > 0 && (
-              <span className="movie-detail-count">
-                {movie.ratingCount} đánh giá
-              </span>
-            )}
-          </div>
+          <RatingStars
+            movieId={movie.id}
+            initialScore={movie.ratingScore ?? 0}
+            initialCount={movie.ratingCount ?? 0}
+          />
           {movie.genres && movie.genres.length > 0 && (
             <div className="movie-detail-genres" aria-label="Thể loại">
               {movie.genres.map((g) => (

@@ -380,6 +380,43 @@ body {
   color: #9ca3af;
 }
 
+.movie-rating-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.75rem;
+}
+
+.movie-rating-star {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: #4b5563;
+  transition: color 0.1s ease, transform 0.05s ease;
+}
+
+.movie-rating-star:hover {
+  transform: translateY(-1px);
+}
+
+.movie-rating-star-active {
+  color: #fbbf24;
+}
+
+.movie-rating-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.movie-rating-error {
+  font-size: 0.8rem;
+  color: #fecaca;
+}
+
 .movie-detail-genres {
   display: flex;
   flex-wrap: wrap;
