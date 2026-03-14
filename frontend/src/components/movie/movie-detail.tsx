@@ -3,6 +3,7 @@ import { getPosterUrl } from '@/lib/image';
 import type { MovieDetail as MovieDetailType } from '@/features/movie/types';
 import { CommentList } from './comment-list';
 import { RatingStars } from './rating-stars';
+import { LikeButton } from './like-button';
 
 interface MovieDetailProps {
   movie: MovieDetailType;
@@ -49,7 +50,10 @@ export function MovieDetail({ movie }: MovieDetailProps) {
           {movieTypeLabel && (
             <span className="movie-detail-type-badge">{movieTypeLabel}</span>
           )}
-          <h1 className="movie-detail-title">{movie.title}</h1>
+          <div className="movie-detail-title-row">
+            <h1 className="movie-detail-title">{movie.title}</h1>
+            <LikeButton movieId={movie.id} />
+          </div>
           <RatingStars
             movieId={movie.id}
             initialScore={movie.ratingScore ?? 0}
