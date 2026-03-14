@@ -914,3 +914,132 @@ body {
   line-height: 1.5;
 }
 
+/* Account pages */
+.account-page {
+  max-width: 1120px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem 1.25rem;
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.account-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.account-subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.account-section {
+  margin-bottom: 2rem;
+}
+
+.account-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.account-section-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.continue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.continue-card {
+  display: block;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.continue-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.8);
+  border-color: rgba(129, 140, 248, 0.8);
+}
+
+.continue-card-poster {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+}
+
+.continue-card-poster-img {
+  object-fit: cover;
+}
+
+.continue-card-poster-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.85), rgba(30, 64, 175, 0.5));
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.continue-card-info {
+  padding: 0.75rem 0.9rem 0.9rem;
+}
+
+.continue-card-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.continue-card-episode {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.85rem;
+  color: #e5e7eb;
+}
+
+.continue-card-progress-bar {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(30, 64, 175, 0.5);
+  overflow: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.continue-card-progress-bar-inner {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  background: linear-gradient(90deg, #60a5fa, #38bdf8);
+  border-radius: inherit;
+  transition: width 0.2s ease-out;
+}
+
+.continue-card-progress-text {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
