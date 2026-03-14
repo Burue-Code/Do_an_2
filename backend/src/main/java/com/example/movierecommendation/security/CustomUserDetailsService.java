@@ -30,9 +30,14 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         String roleName = user.getRole() != null ? user.getRole().getName() : "ROLE_USER";
+        boolean accountNonLocked = !user.isLocked();
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPasswordHash(),
+                true, // enabled
+                true, // accountNonExpired
+                true, // credentialsNonExpired
+                accountNonLocked,
                 Collections.singletonList(new SimpleGrantedAuthority(roleName))
         );
     }
