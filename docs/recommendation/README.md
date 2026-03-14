@@ -45,23 +45,29 @@ Giai đoạn đầu **không sử dụng ML phức tạp**, mà áp dụng **tí
 - `rating_score`: ưu tiên phim có rating trung bình cao và nhiều lượt đánh giá.
 - `trending_score`: ưu tiên phim đang được xem nhiều (dựa trên `watch_logs`).
 
-Ví dụ công thức tổng quát:
+Chi tiết thiết kế scoring v1 được mô tả trong  
+`docs/recommendation/scoring_v1_rule_based.md`.
+
+Tóm tắt công thức tổng quát:
 
 \[
 \text{score} =
-  0.40 * \text{genre\_match} +
-  0.25 * \text{watch\_history} +
-  0.20 * \text{like} +
-  0.10 * \text{rating} +
-  0.05 * \text{trending}
+  0.40 * \text{genre\_match\_score} +
+  0.25 * \text{watch\_history\_score} +
+  0.20 * \text{like\_score} +
+  0.10 * \text{rating\_score} +
+  0.05 * \text{trending\_score}
 \]
 
-### Fallback
+Trong đó mỗi thành phần được chuẩn hóa về \([0, 1]\) trước khi nhân trọng số.
 
-- Nếu người dùng mới (ít dữ liệu lịch sử, like, rating):
-  - Gợi ý **phim phổ biến** (trending) hoặc **top rating**.
-- Nếu chưa có `users_genre`:
-  - Có thể gợi ý theo **thể loại phổ biến** và/hoặc yêu cầu người dùng chọn thể loại yêu thích ngay từ đầu.
+### Fallback (tóm tắt)
+
+- **User rất mới** (không có lịch sử, like, rating):
+  - Nếu chưa có `users_genre`: dùng `trending_score` + `rating_score` (phim phổ biến & top rating).
+  - Nếu đã có `users_genre`: dùng `genre_match_score` + `rating_score` + `trending_score`.
+- **Thiếu dữ liệu cho một thành phần**:
+  - Thành phần đó bị bỏ qua và các trọng số còn lại được **chuẩn hóa lại cho tổng = 1**.
 
 ---
 
