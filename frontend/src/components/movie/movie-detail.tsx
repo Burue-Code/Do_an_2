@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getPosterUrl } from '@/lib/image';
 import type { MovieDetail as MovieDetailType } from '@/features/movie/types';
+import { CommentList } from './comment-list';
 
 interface MovieDetailProps {
   movie: MovieDetailType;
@@ -108,11 +109,7 @@ export function MovieDetail({ movie }: MovieDetailProps) {
         <h2 id="comments-heading" className="movie-detail-section-title">
           Bình luận
         </h2>
-        <div className="movie-detail-comments-placeholder-box">
-          <p className="movie-detail-comments-placeholder">
-            Phần bình luận sẽ được cập nhật sau khi tích hợp module bình luận.
-          </p>
-        </div>
+        <CommentList movieId={movie.id} />
       </section>
     </article>
   );

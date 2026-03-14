@@ -449,17 +449,178 @@ body {
   margin: 0 0 0.75rem 0;
 }
 
-.movie-detail-comments-placeholder-box {
-  padding: 1.5rem;
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 0.5rem;
-  border: 1px dashed rgba(148, 163, 184, 0.2);
+.movie-comments-root {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.movie-detail-comments-placeholder {
-  color: #94a3b8;
+.movie-comment-form {
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.movie-comment-form-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.movie-comment-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
   font-size: 0.95rem;
+  color: white;
+}
+
+.movie-comment-user-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.movie-comment-user-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.movie-comment-user-hint {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.movie-comment-textarea {
+  margin-top: 0.5rem;
+  width: 100%;
+  min-height: 3.5rem;
+  resize: vertical;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  background: rgba(15, 23, 42, 0.8);
+  color: #e5e7eb;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.movie-comment-textarea::placeholder {
+  color: #6b7280;
+}
+
+.movie-comment-textarea:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.5);
+}
+
+.movie-comment-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.movie-comment-submit {
+  padding-inline: 1.25rem;
+}
+
+.movie-comment-error {
   margin: 0;
+  font-size: 0.8rem;
+  color: #fecaca;
+}
+
+.movie-comment-muted {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.movie-comment-login-hint {
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  background: rgba(30, 64, 175, 0.25);
+  border: 1px dashed rgba(59, 130, 246, 0.5);
+}
+
+.movie-comment-login-hint p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #bfdbfe;
+}
+
+.movie-comment-link {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.movie-comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.movie-comment-item {
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(30, 64, 175, 0.5);
+}
+
+.movie-comment-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.movie-comment-item-avatar {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #bfdbfe;
+}
+
+.movie-comment-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.movie-comment-item-author {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.movie-comment-item-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.movie-comment-item-content {
+  margin: 0.1rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e5e7eb;
 }
 
 /* Movie detail skeleton */
