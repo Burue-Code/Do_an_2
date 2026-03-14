@@ -914,6 +914,58 @@ body {
   line-height: 1.5;
 }
 
+/* Recommendations page */
+.recommendations-page {
+  max-width: 1120px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem 1.25rem;
+}
+
+.recommendations-header {
+  margin-bottom: 1.5rem;
+}
+
+.recommendations-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem 0;
+}
+
+.recommendations-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #9ca3af;
+}
+
+.recommendations-empty {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 560px;
+  margin: 0 auto;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.recommendations-empty p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: #e5e7eb;
+}
+
+.recommendations-link {
+  color: #a5b4fc;
+  text-decoration: underline;
+}
+
+.recommendations-link:hover {
+  color: #c7d2fe;
+}
+
+.recommendations-grid-wrap {
+  margin-top: 0.5rem;
+}
+
 /* Account pages */
 .account-page {
   max-width: 1120px;
