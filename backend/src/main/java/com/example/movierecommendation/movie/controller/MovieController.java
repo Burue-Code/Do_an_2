@@ -1,5 +1,7 @@
 package com.example.movierecommendation.movie.controller;
 
+import com.example.movierecommendation.common.dto.BaseResponse;
+import com.example.movierecommendation.common.dto.PageResponse;
 import com.example.movierecommendation.movie.dto.MovieDetailResponse;
 import com.example.movierecommendation.movie.dto.MovieListResponse;
 import com.example.movierecommendation.movie.service.MovieQueryService;
@@ -24,7 +26,7 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MovieListResponse>> getMovies(
+    public ResponseEntity<BaseResponse<PageResponse<MovieListResponse>>> getMovies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String keyword,
@@ -32,13 +34,13 @@ public class MovieController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         Page<MovieListResponse> result = movieQueryService.searchMovies(keyword, genreId, pageable);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(BaseResponse.ok(PageResponse.of(result)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovieDetailResponse> getMovieDetail(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<MovieDetailResponse>> getMovieDetail(@PathVariable Long id) {
         MovieDetailResponse response = movieQueryService.getMovieDetail(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(BaseResponse.ok(response));
     }
 }
 

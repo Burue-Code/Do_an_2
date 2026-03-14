@@ -60,3 +60,4 @@ coverage/
 *.sqlite
 *.db
 *.sql.bak
+/.metadata/

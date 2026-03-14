@@ -1,0 +1,13 @@
+# Profile dành cho MySQL 5.5 (XAMPP cũ): tắt Flyway, dùng Hibernate tạo bảng
+# Chạy với: spring.profiles.active=dev,mysql55
+# Khuyến nghị: nâng cấp lên MySQL 8 để dùng Flyway đúng cách
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: update

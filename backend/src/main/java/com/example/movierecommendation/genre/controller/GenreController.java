@@ -1,5 +1,6 @@
 package com.example.movierecommendation.genre.controller;
 
+import com.example.movierecommendation.common.dto.BaseResponse;
 import com.example.movierecommendation.genre.dto.GenreResponse;
 import com.example.movierecommendation.genre.service.GenreService;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,13 @@ public class GenreController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GenreResponse>> getGenres() {
-        return ResponseEntity.ok(genreService.getAll());
+    public ResponseEntity<BaseResponse<List<GenreResponse>>> getGenres() {
+        return ResponseEntity.ok(BaseResponse.ok(genreService.getAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GenreResponse> getGenre(@PathVariable Long id) {
-        return ResponseEntity.ok(genreService.getById(id));
+    public ResponseEntity<BaseResponse<GenreResponse>> getGenre(@PathVariable Long id) {
+        return ResponseEntity.ok(BaseResponse.ok(genreService.getById(id)));
     }
 }
 

@@ -5,6 +5,8 @@ import com.example.movierecommendation.auth.dto.ChangePasswordRequest;
 import com.example.movierecommendation.auth.dto.LoginRequest;
 import com.example.movierecommendation.auth.dto.RegisterRequest;
 import com.example.movierecommendation.auth.service.AuthService;
+import com.example.movierecommendation.common.dto.ApiMessage;
+import com.example.movierecommendation.common.dto.BaseResponse;
 import com.example.movierecommendation.user.dto.UserProfileResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,35 +24,35 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<BaseResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse response = authService.register(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(BaseResponse.ok(response));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<BaseResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(BaseResponse.ok(response));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserProfileResponse> me() {
+    public ResponseEntity<BaseResponse<UserProfileResponse>> me() {
         UserProfileResponse profile = authService.getCurrentUserProfile();
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(BaseResponse.ok(profile));
     }
 
     @PostMapping("/change-password")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<BaseResponse<ApiMessage>> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authService.changePassword(request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(BaseResponse.ok(ApiMessage.ok("Password updated")));
     }
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Void> logout() {
+    public ResponseEntity<BaseResponse<ApiMessage>> logout() {
         // Stateless JWT: frontend chỉ cần xoá token, ở server trả 200 OK
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(BaseResponse.ok(ApiMessage.ok("Logged out")));
     }
 }
 

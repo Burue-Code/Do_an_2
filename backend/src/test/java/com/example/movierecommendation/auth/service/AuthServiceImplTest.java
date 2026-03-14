@@ -51,7 +51,12 @@ class AuthServiceImplTest {
     @Mock
     private Authentication authentication;
 
+    @Mock
     private UserMapper userMapper;
+
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
+
     private AuthServiceImpl authService;
 
     private Role userRole;
@@ -62,14 +67,12 @@ class AuthServiceImplTest {
         userRole.setId(1L);
         userRole.setName("ROLE_USER");
 
-        userMapper = new UserMapper();
-
         authService = new AuthServiceImpl(
                 authenticationManager,
                 userRepository,
                 roleRepository,
                 passwordEncoder,
-                new JwtTokenProvider(),
+                jwtTokenProvider,
                 userMapper
         );
     }
@@ -98,6 +101,7 @@ class AuthServiceImplTest {
                 .willReturn(authentication);
         given(authentication.getName()).willReturn("john");
         given(userRepository.findByUsername("john")).willReturn(Optional.of(savedUser));
+        given(jwtTokenProvider.generateToken(any(Authentication.class))).willReturn("test-access-token");
 
         UserProfileResponse profile = new UserProfileResponse();
         profile.setId(10L);
@@ -117,9 +121,10 @@ class AuthServiceImplTest {
         verify(passwordEncoder).encode("password123");
         verify(userRepository).save(any(User.class));
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(jwtTokenProvider).generateToken(any(Authentication.class));
         verify(userRepository).findByUsername("john");
         verify(userMapper).toUserProfileResponse(savedUser);
-        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder, userMapper);
+        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder, userMapper, jwtTokenProvider);
     }
 
     @Test
@@ -148,6 +153,7 @@ class AuthServiceImplTest {
         given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .willReturn(authentication);
         given(authentication.getName()).willReturn("john");
+        given(jwtTokenProvider.generateToken(any(Authentication.class))).willReturn("test-access-token");
 
         User user = new User();
         user.setId(10L);
@@ -170,8 +176,10 @@ class AuthServiceImplTest {
         assertThat(response.getUser().getFullName()).isEqualTo("John Doe");
 
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(jwtTokenProvider).generateToken(any(Authentication.class));
         verify(userRepository).findByUsername("john");
-        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder);
+        verify(userMapper).toUserProfileResponse(user);
+        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder, userMapper, jwtTokenProvider);
     }
 }
 

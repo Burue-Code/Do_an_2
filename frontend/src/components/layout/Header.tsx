@@ -11,6 +11,9 @@ export function Header() {
           <Link href="/" className="app-nav-link">
             Trang chủ
           </Link>
+          <Link href="/movies" className="app-nav-link">
+            Phim
+          </Link>
           <Link href="/login" className="app-nav-link">
             Đăng nhập
           </Link>
