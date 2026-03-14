@@ -1,5 +1,7 @@
 package com.example.movierecommendation.genre.controller;
 
+import com.example.movierecommendation.common.dto.ApiMessage;
+import com.example.movierecommendation.common.dto.BaseResponse;
 import com.example.movierecommendation.genre.dto.CreateGenreRequest;
 import com.example.movierecommendation.genre.dto.GenreResponse;
 import com.example.movierecommendation.genre.dto.UpdateGenreRequest;
@@ -27,20 +29,20 @@ public class AdminGenreController {
     }
 
     @PostMapping
-    public ResponseEntity<GenreResponse> createGenre(@Valid @RequestBody CreateGenreRequest request) {
-        return ResponseEntity.ok(genreService.create(request));
+    public ResponseEntity<BaseResponse<GenreResponse>> createGenre(@Valid @RequestBody CreateGenreRequest request) {
+        return ResponseEntity.ok(BaseResponse.ok(genreService.create(request)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GenreResponse> updateGenre(@PathVariable Long id,
-                                                     @Valid @RequestBody UpdateGenreRequest request) {
-        return ResponseEntity.ok(genreService.update(id, request));
+    public ResponseEntity<BaseResponse<GenreResponse>> updateGenre(@PathVariable Long id,
+                                                                   @Valid @RequestBody UpdateGenreRequest request) {
+        return ResponseEntity.ok(BaseResponse.ok(genreService.update(id, request)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<ApiMessage>> deleteGenre(@PathVariable Long id) {
         genreService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(BaseResponse.ok(ApiMessage.ok("Genre deleted")));
     }
 }
 

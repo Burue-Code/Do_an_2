@@ -66,9 +66,13 @@ export default function MoviesPage() {
 
       {isLoading && <p className="movies-page-loading">Đang tải...</p>}
       {isError && (
-        <p className="movies-page-error">
-          Lỗi: {(error as Error)?.message ?? 'Không thể tải dữ liệu'}
-        </p>
+        <div className="movies-page-error-box">
+          <p className="movies-page-error">
+            {(error as Error)?.message === 'Network Error'
+              ? 'Không kết nối được máy chủ. Hãy chạy backend (Spring Boot) tại http://localhost:8080 rồi tải lại trang.'
+              : `Lỗi: ${(error as Error)?.message ?? 'Không thể tải dữ liệu'}`}
+          </p>
+        </div>
       )}
       {!isLoading && !isError && data && (
         <>

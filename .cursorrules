@@ -1,0 +1,15 @@
+# Cursor rules – Movie Recommendation System
+
+## Backend (Spring Boot)
+- Dùng constructor injection
+- Controller mỏng, logic trong Service
+- Luôn dùng DTO, BaseResponse/PageResponse
+- Tên class, biến, method: tiếng Anh
+
+## Frontend (Next.js)
+- Server Component mặc định; Client Component khi cần state/event
+- Fetch API qua React Query, src/features/* theo domain
+- Tên biến/component: tiếng Anh
+
+## Tuân thủ tech_stack.md
+Tất cả thay đổi phải đúng với docs/resources/tech_stack.md.

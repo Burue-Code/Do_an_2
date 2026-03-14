@@ -10,41 +10,56 @@ function formatRating(score: number) {
   return score.toFixed(1);
 }
 
+/** movieType: 0 = Phim lẻ, 1 = Phim bộ (hoặc theo enum backend) */
+function getMovieTypeLabel(movieType: number | null | undefined): string | null {
+  if (movieType == null) return null;
+  if (movieType === 0) return 'Phim lẻ';
+  if (movieType === 1) return 'Phim bộ';
+  return `Loại ${movieType}`;
+}
+
 export function MovieDetail({ movie }: MovieDetailProps) {
   const posterUrl = getPosterUrl(movie.poster);
+  const movieTypeLabel = getMovieTypeLabel(movie.movieType);
 
   return (
-    <article className="movie-detail">
+    <article className="movie-detail" aria-label={`Chi tiết phim: ${movie.title}`}>
       <div className="movie-detail-hero">
         <div className="movie-detail-poster">
           {posterUrl ? (
             <Image
               src={posterUrl}
-              alt={movie.title}
+              alt={`Poster: ${movie.title}`}
               width={320}
               height={480}
               className="movie-detail-poster-img"
               unoptimized
               priority
+              sizes="(max-width: 640px) 100vw, 320px"
             />
           ) : (
-            <div className="movie-detail-poster-placeholder">No poster</div>
+            <div className="movie-detail-poster-placeholder" aria-hidden="true">
+              <span>Chưa có poster</span>
+            </div>
           )}
         </div>
         <div className="movie-detail-meta">
+          {movieTypeLabel && (
+            <span className="movie-detail-type-badge">{movieTypeLabel}</span>
+          )}
           <h1 className="movie-detail-title">{movie.title}</h1>
-          <div className="movie-detail-rating-row">
+          <div className="movie-detail-rating-row" aria-label={`Điểm đánh giá: ${formatRating(movie.ratingScore ?? 0)} trên 5`}>
             <span className="movie-detail-rating">
               {formatRating(movie.ratingScore ?? 0)} ★
             </span>
             {movie.ratingCount != null && movie.ratingCount > 0 && (
               <span className="movie-detail-count">
-                ({movie.ratingCount} đánh giá)
+                {movie.ratingCount} đánh giá
               </span>
             )}
           </div>
           {movie.genres && movie.genres.length > 0 && (
-            <div className="movie-detail-genres">
+            <div className="movie-detail-genres" aria-label="Thể loại">
               {movie.genres.map((g) => (
                 <span key={g} className="movie-detail-genre-tag">
                   {g}
@@ -52,26 +67,52 @@ export function MovieDetail({ movie }: MovieDetailProps) {
               ))}
             </div>
           )}
-          <div className="movie-detail-misc">
+          <dl className="movie-detail-misc">
             {movie.releaseYear != null && (
-              <span>Năm: {movie.releaseYear}</span>
+              <div className="movie-detail-misc-item">
+                <dt>Năm phát hành</dt>
+                <dd>{movie.releaseYear}</dd>
+              </div>
             )}
             {movie.duration != null && (
-              <span>Thời lượng: {movie.duration} phút</span>
+              <div className="movie-detail-misc-item">
+                <dt>Thời lượng</dt>
+                <dd>{movie.duration} phút</dd>
+              </div>
             )}
-            {movie.status != null && <span>Trạng thái: {movie.status}</span>}
-          </div>
+            {movie.totalEpisodes != null && movie.totalEpisodes > 0 && (
+              <div className="movie-detail-misc-item">
+                <dt>Số tập</dt>
+                <dd>{movie.totalEpisodes} tập</dd>
+              </div>
+            )}
+            {movie.status != null && (
+              <div className="movie-detail-misc-item">
+                <dt>Trạng thái</dt>
+                <dd>{movie.status}</dd>
+              </div>
+            )}
+          </dl>
           {movie.description && (
-            <p className="movie-detail-description">{movie.description}</p>
+            <section className="movie-detail-description-wrap" aria-labelledby="desc-heading">
+              <h2 id="desc-heading" className="movie-detail-section-title movie-detail-section-title-small">
+                Nội dung
+              </h2>
+              <p className="movie-detail-description">{movie.description}</p>
+            </section>
           )}
         </div>
       </div>
 
-      <section className="movie-detail-comments">
-        <h2 className="movie-detail-section-title">Bình luận</h2>
-        <p className="movie-detail-comments-placeholder">
-          Phần bình luận sẽ được cập nhật sau.
-        </p>
+      <section className="movie-detail-comments" aria-labelledby="comments-heading">
+        <h2 id="comments-heading" className="movie-detail-section-title">
+          Bình luận
+        </h2>
+        <div className="movie-detail-comments-placeholder-box">
+          <p className="movie-detail-comments-placeholder">
+            Phần bình luận sẽ được cập nhật sau khi tích hợp module bình luận.
+          </p>
+        </div>
       </section>
     </article>
   );

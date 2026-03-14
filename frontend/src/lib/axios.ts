@@ -11,3 +11,32 @@ export const api = axios.create({
     'Content-Type': 'application/json'
   }
 });
+
+/** BaseResponse theo tech_stack: { success, data, message } */
+interface BaseResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string | null;
+}
+
+/** Interceptor: gắn Bearer token + unwrap BaseResponse.data */
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => {
+    const body = response.data as BaseResponse<unknown> | unknown;
+    if (body && typeof body === 'object' && 'success' in body && 'data' in body) {
+      response.data = (body as BaseResponse<unknown>).data;
+    }
+    return response;
+  },
+  (error) => Promise.reject(error)
+);
