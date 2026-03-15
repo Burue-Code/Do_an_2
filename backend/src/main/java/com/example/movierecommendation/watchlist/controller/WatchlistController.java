@@ -27,6 +27,12 @@ public class WatchlistController {
         this.watchlistService = watchlistService;
     }
 
+    @GetMapping("/api/movies/{movieId}/watchlist")
+    public ResponseEntity<BaseResponse<WatchlistToggleResponse>> getStatus(@PathVariable Long movieId) {
+        boolean inWatchlist = watchlistService.isInWatchlist(movieId);
+        return ResponseEntity.ok(BaseResponse.ok(new WatchlistToggleResponse(inWatchlist)));
+    }
+
     @PostMapping("/api/movies/{movieId}/watchlist/toggle")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BaseResponse<WatchlistToggleResponse>> toggle(

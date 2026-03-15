@@ -9,6 +9,8 @@ public interface WatchlistService {
 
     WatchlistToggleResponse toggle(Long movieId);
 
+    boolean isInWatchlist(Long movieId);
+
     Page<MovieListResponse> getCurrentUserWatchlist(Pageable pageable);
 }
 

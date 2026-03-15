@@ -50,6 +50,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        if (path == null) return false;
+        // Chỉ bỏ qua JWT cho login và register (để tránh 401 do token cũ); các route /me, change-password, logout vẫn cần JWT
+        return path.equals("/api/auth/login") || path.equals("/api/auth/register");
+    }
+
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

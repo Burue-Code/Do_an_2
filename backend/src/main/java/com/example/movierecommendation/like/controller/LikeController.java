@@ -17,6 +17,12 @@ public class LikeController {
         this.likeService = likeService;
     }
 
+    @GetMapping
+    public ResponseEntity<BaseResponse<ToggleLikeResponse>> getStatus(@PathVariable Long movieId) {
+        boolean liked = likeService.isLiked(movieId);
+        return ResponseEntity.ok(BaseResponse.ok(new ToggleLikeResponse(liked)));
+    }
+
     @PostMapping("/toggle")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BaseResponse<ToggleLikeResponse>> toggle(@PathVariable Long movieId) {

@@ -1,0 +1,8 @@
+.selectionBar {
+  margin: 0 0 1rem 0;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary, #666);
+  border-bottom: 1px solid var(--border-color, #eee);
+}

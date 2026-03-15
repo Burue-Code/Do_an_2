@@ -99,3 +99,18 @@ Khi cập nhật hoặc thêm API mới, hãy:
 2. Đảm bảo tên DTO trong code backend trùng/khớp với schema tương ứng.
 3. Cập nhật tài liệu liên quan trong `docs/resources/srs.md` và `docs/resources/project_structure.md` nếu phạm vi chức năng thay đổi.
 
+---
+
+## 4. Liên kết với kiểm thử & demo
+
+- Các endpoint trong `openapi.yaml` đã được hiện thực và một phần được bao phủ bởi:
+  - **Unit/Service test backend** cho các module: `auth`, `user`, `movie`, `genre`, `comment`, `rating`, `like`, `watchlist`, `watchhistory`, `recommendation`, `dashboard`.
+  - **Manual/UI test frontend** cho các luồng chính sử dụng những API này (xem thêm tài liệu trong `docs/frontend/`).
+- Trong quá trình demo giai đoạn 6, nên chọn một số endpoint tiêu biểu để minh họa:
+  - Auth: `POST /api/auth/login`, `GET /api/auth/me`.
+  - Movie: `GET /api/movies`, `GET /api/movies/{id}`.
+  - Interaction: `POST /api/movies/{movieId}/comments`, `POST /api/movies/{movieId}/ratings`, `POST /api/movies/{movieId}/like/toggle`, `POST /api/movies/{movieId}/watchlist/toggle`.
+  - Recommendation: `GET /api/recommendations/me`.
+  - Admin/Dashboard: các endpoint tổng quan thống kê.
+
+

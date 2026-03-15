@@ -12,14 +12,11 @@ public final class SecurityUtils {
 
     public static Optional<String> getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == null) {
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == null) {
             return Optional.empty();
         }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof String username) {
-            return Optional.of(username);
-        }
-        return Optional.empty();
+        String name = authentication.getName();
+        return name == null || name.isEmpty() ? Optional.empty() : Optional.of(name);
     }
 }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useToggleLike } from '@/features/like/hooks';
+import { useLikeStatus, useToggleLike } from '@/features/like/hooks';
 import { useAuth } from '@/hooks/use-auth';
 
 interface LikeButtonProps {
@@ -10,10 +10,13 @@ interface LikeButtonProps {
 
 export function LikeButton({ movieId }: LikeButtonProps) {
   const { isAuthenticated } = useAuth();
-  const [liked, setLiked] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const { data: likeStatus } = useLikeStatus(movieId, isAuthenticated);
   const mutation = useToggleLike(movieId);
+
+  /* Chưa đăng nhập luôn hiển thị "Thích", không dùng cache/API */
+  const liked = isAuthenticated && (likeStatus?.liked ?? false);
 
   const handleClick = async () => {
     if (!isAuthenticated) {
@@ -25,8 +28,7 @@ export function LikeButton({ movieId }: LikeButtonProps) {
     setErrorMessage(null);
 
     try {
-      const result = await mutation.mutateAsync();
-      setLiked(result.liked);
+      await mutation.mutateAsync();
     } catch {
       setErrorMessage('Không thể cập nhật trạng thái thích. Vui lòng thử lại sau.');
     }

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import * as api from './api';
-import type { LoginParams, RegisterParams } from './api';
+import type { ChangePasswordParams, LoginParams, RegisterParams, UpdateProfileParams } from './api';
 
 const AUTH_ME_KEY = ['auth', 'me'] as const;
 
@@ -44,6 +44,44 @@ export function useRegister() {
       }
       queryClient.setQueryData(AUTH_ME_KEY, auth.user);
     }
+  });
+}
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: UpdateProfileParams) => api.updateProfile(params),
+    onSuccess: (user) => {
+      queryClient.setQueryData(AUTH_ME_KEY, user);
+    }
+  });
+}
+
+/** Profile đầy đủ (có favoriteGenreIds) — dùng GET /auth/me, refetch khi vào trang profile */
+export function useProfileForPage() {
+  const hasToken = !!getStoredToken();
+  return useQuery({
+    queryKey: AUTH_ME_KEY,
+    queryFn: api.fetchMe,
+    enabled: hasToken,
+    refetchOnMount: 'always',
+    staleTime: 0
+  });
+}
+
+export function useUpdateFavoriteGenres() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (genreIds: number[]) => api.updateFavoriteGenres(genreIds),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: AUTH_ME_KEY });
+    }
+  });
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (params: ChangePasswordParams) => api.changePassword(params)
   });
 }
 
