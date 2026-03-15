@@ -1,8 +1,9 @@
 import type { MovieCard } from '@/features/movie/types';
 
-export interface ContinueWatchingItem extends MovieCard {
-  episodeNumber?: number | null;
+export interface ContinueWatchingItem {
+  movie: MovieCard;
   progressPercent?: number | null;
+  episodeNumber?: number | null;
 }
 
 export interface ContinueWatchingResponse {

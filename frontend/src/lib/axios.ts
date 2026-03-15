@@ -19,12 +19,17 @@ interface BaseResponse<T> {
   message?: string | null;
 }
 
-/** Interceptor: gắn Bearer token + unwrap BaseResponse.data */
+/** Interceptor: gắn Bearer token (không gửi cho login/register để tránh 401 do token cũ) */
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const isAuthEndpoint =
+      typeof config.url === 'string' &&
+      (config.url.startsWith('/auth/login') || config.url.startsWith('/auth/register'));
+    if (!isAuthEndpoint) {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
   }
   return config;

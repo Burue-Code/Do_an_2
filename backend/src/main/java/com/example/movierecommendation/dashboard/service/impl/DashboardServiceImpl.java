@@ -83,7 +83,8 @@ public class DashboardServiceImpl implements DashboardService {
                 .collect(Collectors.toList());
 
         Map<Long, Long> watchCountByMovie = recentLogs.stream()
-                .collect(Collectors.groupingBy(WatchLog::getMovieId, Collectors.counting()));
+                .filter(log -> log.getMovie() != null && log.getMovie().getId() != null)
+                .collect(Collectors.groupingBy(log -> log.getMovie().getId(), Collectors.counting()));
 
         List<Long> topMovieIds = watchCountByMovie.entrySet().stream()
                 .sorted(Map.Entry.<Long, Long>comparingByValue().reversed())

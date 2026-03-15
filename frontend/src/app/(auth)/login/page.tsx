@@ -1,6 +1,32 @@
+"use client";
+
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { login } = useAuth();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const isLoading = login.isPending;
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+
+    try {
+      await login.mutateAsync({ username, password });
+      router.push('/');
+    } catch (e: unknown) {
+      setError('Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.');
+    }
+  }
+
   return (
     <section className="auth-page">
       <h1 className="auth-title">Đăng nhập</h1>
@@ -8,7 +34,7 @@ export default function LoginPage() {
         Truy cập hệ thống gợi ý phim theo thể loại bằng tài khoản của bạn.
       </p>
 
-      <form className="auth-form">
+      <form className="auth-form" onSubmit={handleSubmit}>
         <div className="auth-field">
           <label htmlFor="username" className="auth-label">
             Tên đăng nhập hoặc email
@@ -20,6 +46,9 @@ export default function LoginPage() {
             className="auth-input"
             autoComplete="username"
             placeholder="nguyenvana"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </div>
 
@@ -34,12 +63,17 @@ export default function LoginPage() {
             className="auth-input"
             autoComplete="current-password"
             placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
 
+        {error && <p className="auth-error">{error}</p>}
+
         <div className="auth-actions">
-          <button type="submit" className="auth-button-primary">
-            Đăng nhập
+          <button type="submit" className="auth-button-primary" disabled={isLoading}>
+            {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
           <p className="auth-meta">
             Chưa có tài khoản?{' '}
@@ -52,4 +86,3 @@ export default function LoginPage() {
     </section>
   );
 }
-

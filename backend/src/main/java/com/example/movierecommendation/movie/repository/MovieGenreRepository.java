@@ -6,6 +6,7 @@ import com.example.movierecommendation.movie.entity.MovieGenreId;
 import com.example.movierecommendation.genre.entity.Genre;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface MovieGenreRepository extends JpaRepository<MovieGenre, MovieGenreId> {
@@ -13,5 +14,7 @@ public interface MovieGenreRepository extends JpaRepository<MovieGenre, MovieGen
     List<MovieGenre> findByMovie(Movie movie);
 
     List<MovieGenre> findByGenre(Genre genre);
+
+    List<MovieGenre> findByMovie_IdIn(Collection<Long> movieIds);
 }
 

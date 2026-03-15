@@ -9,4 +9,7 @@ export interface UserProfile {
   username: string;
   fullName: string;
   role: string;
+  phoneNumber: string | null;
+  email: string | null;
+  favoriteGenreIds?: number[];
 }

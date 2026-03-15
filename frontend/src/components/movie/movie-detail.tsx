@@ -1,9 +1,13 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { getPosterUrl } from '@/lib/image';
 import type { MovieDetail as MovieDetailType } from '@/features/movie/types';
 import { CommentList } from './comment-list';
 import { RatingStars } from './rating-stars';
 import { LikeButton } from './like-button';
+import { WatchlistButton } from './watchlist-button';
+import { MovieDetailEpisodes } from './movie-detail-episodes';
+import { MovieDetailRecommendations } from './movie-detail-recommendations';
 
 interface MovieDetailProps {
   movie: MovieDetailType;
@@ -13,11 +17,11 @@ function formatRating(score: number) {
   return score.toFixed(1);
 }
 
-/** movieType: 0 = Phim lẻ, 1 = Phim bộ (hoặc theo enum backend) */
+/** movieType: 1 = Phim lẻ, 2 = Phim bộ */
 function getMovieTypeLabel(movieType: number | null | undefined): string | null {
   if (movieType == null) return null;
-  if (movieType === 0) return 'Phim lẻ';
-  if (movieType === 1) return 'Phim bộ';
+  if (movieType === 1) return 'Phim lẻ';
+  if (movieType === 2) return 'Phim bộ';
   return `Loại ${movieType}`;
 }
 
@@ -52,7 +56,13 @@ export function MovieDetail({ movie }: MovieDetailProps) {
           )}
           <div className="movie-detail-title-row">
             <h1 className="movie-detail-title">{movie.title}</h1>
-            <LikeButton movieId={movie.id} />
+            <div className="movie-detail-actions">
+              <Link href={`/movies/${movie.id}/watch`} className="movie-detail-watch-btn">
+                Xem phim
+              </Link>
+              <WatchlistButton movieId={movie.id} />
+              <LikeButton movieId={movie.id} />
+            </div>
           </div>
           <RatingStars
             movieId={movie.id}
@@ -104,6 +114,14 @@ export function MovieDetail({ movie }: MovieDetailProps) {
           )}
         </div>
       </div>
+
+      <MovieDetailEpisodes
+        movieId={movie.id}
+        totalEpisodes={movie.totalEpisodes}
+        movieType={movie.movieType}
+      />
+
+      <MovieDetailRecommendations currentMovieId={movie.id} />
 
       <section className="movie-detail-comments" aria-labelledby="comments-heading">
         <h2 id="comments-heading" className="movie-detail-section-title">

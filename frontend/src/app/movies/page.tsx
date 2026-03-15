@@ -1,69 +1,76 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { MovieGrid } from '@/components/movie/movie-grid';
 import { useMovieList } from '@/features/movie/hooks';
 import { useGenres } from '@/features/genre/hooks';
+import styles from './movies.module.css';
+
+const MENU_LABELS: Record<string, string> = {
+  'phim-le': 'Phim lẻ',
+  'phim-bo': 'Phim bộ',
+  'phim-moi': 'Phim mới cập nhật',
+  'top-phim': 'Top phim (đánh giá cao)'
+};
+
+/** 1 = phim lẻ, 2 = phim bộ (backend movie_type) */
+const MENU_TO_MOVIE_TYPE: Record<string, number> = {
+  'phim-le': 1,
+  'phim-bo': 2
+};
+
+const MENU_TO_SORT: Record<string, 'top' | 'new'> = {
+  'phim-moi': 'new',
+  'top-phim': 'top'
+};
 
 export default function MoviesPage() {
+  const searchParams = useSearchParams();
+  const keywordFromUrl = searchParams.get('keyword') ?? '';
+  const genreIdFromUrl = searchParams.get('genreId');
+  const menuFromUrl = searchParams.get('menu') ?? '';
   const [page, setPage] = useState(0);
-  const [keyword, setKeyword] = useState('');
-  const [genreId, setGenreId] = useState<number | ''>('');
-  const [keywordInput, setKeywordInput] = useState('');
 
-  const { data, isLoading, isError, error } = useMovieList({
+  // Reset page when filters change (genre, keyword, menu)
+  const filterKey = `${genreIdFromUrl ?? ''}-${keywordFromUrl}-${menuFromUrl}`;
+  useEffect(() => {
+    setPage(0);
+  }, [filterKey]);
+
+  const { data: genres = [] } = useGenres();
+  const movieType = menuFromUrl && MENU_TO_MOVIE_TYPE[menuFromUrl] != null ? MENU_TO_MOVIE_TYPE[menuFromUrl] : undefined;
+  const sort = menuFromUrl && MENU_TO_SORT[menuFromUrl] ? MENU_TO_SORT[menuFromUrl] : undefined;
+  const listParams = {
     page,
     size: 20,
-    keyword: keyword || undefined,
-    genreId: genreId === '' ? undefined : (genreId as number)
-  });
-  const { data: genres } = useGenres();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setKeyword(keywordInput.trim());
-    setPage(0);
+    keyword: keywordFromUrl || undefined,
+    genreId: genreIdFromUrl ? Number(genreIdFromUrl) : undefined,
+    movieType,
+    sort
   };
-
-  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setGenreId(val === '' ? '' : Number(val));
-    setPage(0);
-  };
+  const { data, isLoading, isError, error } = useMovieList(listParams);
 
   const totalPages = data?.totalPages ?? 0;
   const currentPage = data?.number ?? 0;
 
-  return (
-    <div>
-      <header className="movies-page-header">
-        <h1>Danh sách phim</h1>
-        <form onSubmit={handleSearch} className="movies-page-filters">
-          <input
-            type="text"
-            placeholder="Tìm theo tên phim..."
-            value={keywordInput}
-            onChange={(e) => setKeywordInput(e.target.value)}
-            className="movies-page-input"
-          />
-          <button type="submit" className="auth-button-primary" style={{ width: 'auto', padding: '0.5rem 1rem' }}>
-            Tìm kiếm
-          </button>
-          <select
-            value={genreId}
-            onChange={handleGenreChange}
-            className="movies-page-select"
-          >
-            <option value="">Tất cả thể loại</option>
-            {genres?.map((g) => (
-              <option key={g.id} value={g.id}>
-                {g.name}
-              </option>
-            ))}
-          </select>
-        </form>
-      </header>
+  const genreName = genreIdFromUrl && genres.length
+    ? genres.find((g) => g.id === Number(genreIdFromUrl))?.name
+    : null;
+  const selectionText =
+    genreName != null
+      ? `Thể loại: ${genreName}`
+      : keywordFromUrl
+        ? `Tìm kiếm: "${keywordFromUrl}"`
+        : menuFromUrl && MENU_LABELS[menuFromUrl]
+          ? MENU_LABELS[menuFromUrl]
+          : 'Tất cả phim';
 
+  return (
+    <div key={filterKey}>
+      <p className={styles.selectionBar} aria-live="polite">
+        {selectionText}
+      </p>
       {isLoading && <p className="movies-page-loading">Đang tải...</p>}
       {isError && (
         <div className="movies-page-error-box">

@@ -10,10 +10,13 @@ import com.example.movierecommendation.movie.repository.MovieGenreRepository;
 import com.example.movierecommendation.movie.repository.MovieRepository;
 import com.example.movierecommendation.movie.service.MovieQueryService;
 import com.example.movierecommendation.movie.specification.MovieSpecification;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,9 +37,22 @@ public class MovieQueryServiceImpl implements MovieQueryService {
     }
 
     @Override
-    public Page<MovieListResponse> searchMovies(String keyword, Long genreId, Pageable pageable) {
-        Specification<Movie> spec = MovieSpecification.withFilters(keyword, genreId, null, null);
-        Page<Movie> page = movieRepository.findAll(spec, pageable);
+    public Page<MovieListResponse> searchMovies(String keyword, Long genreId, Integer movieType, String sort, Pageable pageable) {
+        Pageable withSort = pageable;
+        if (StringUtils.hasText(sort)) {
+            if ("top".equalsIgnoreCase(sort)) {
+                withSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "ratingScore"));
+            } else if ("new".equalsIgnoreCase(sort)) {
+                withSort = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "createdAt"));
+            }
+        }
+        Page<Movie> page;
+        if (movieType != null && !StringUtils.hasText(keyword) && genreId == null) {
+            page = movieRepository.findByMovieType(movieType, withSort);
+        } else {
+            Specification<Movie> spec = MovieSpecification.withFilters(keyword, genreId, null, movieType);
+            page = movieRepository.findAll(spec, withSort);
+        }
         return page.map(movieMapper::toListDto);
     }
 
@@ -51,6 +67,30 @@ public class MovieQueryServiceImpl implements MovieQueryService {
                 .collect(Collectors.toList());
 
         return movieMapper.toDetailDto(movie, genres);
+    }
+
+    @Override
+    public List<MovieListResponse> getTopRated(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return movieRepository.findAllByOrderByRatingScoreDesc(pageable).stream()
+                .map(movieMapper::toListDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MovieListResponse> getNewest(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return movieRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
+                .map(movieMapper::toListDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MovieListResponse> getTrending(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return movieRepository.findAllByOrderByRatingCountDesc(pageable).stream()
+                .map(movieMapper::toListDto)
+                .collect(Collectors.toList());
     }
 }
 

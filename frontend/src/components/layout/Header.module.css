@@ -1,0 +1,210 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(to right, #020617, #0f172a);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: calc(0.6rem + 5px) 1.25rem; /* +10px chiều cao header */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.navLink {
+  font-size: 0.9rem;
+  color: #cbd5f5;
+  text-decoration: none;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+/* Nút dùng chung style nav (Thể loại, user menu) */
+button.navLink {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.navLink:hover {
+  background-color: rgba(148, 163, 184, 0.16);
+  color: #f9fafb;
+}
+
+.navLinkPrimary {
+  background: linear-gradient(to right, #6366f1, #22c55e);
+  color: #f9fafb;
+}
+
+.navLinkPrimary:hover {
+  background: linear-gradient(to right, #4f46e5, #16a34a);
+  color: #f9fafb;
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1;
+  min-width: 160px;
+  max-width: 320px;
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.searchSuggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 0.25rem 0 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 25;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #cbd5f5;
+  text-decoration: none;
+}
+
+.suggestionItem:hover {
+  background: rgba(148, 163, 184, 0.15);
+  color: #f9fafb;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.8);
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.searchBtn {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(to right, #6366f1, #22c55e);
+  color: #f9fafb;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.searchBtn:hover {
+  background: linear-gradient(to right, #4f46e5, #16a34a);
+  color: #f9fafb;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  min-width: 160px;
+  padding: 0.35rem 0;
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 30;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+  color: #cbd5f5;
+  text-decoration: none;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background: rgba(148, 163, 184, 0.15);
+  color: #f9fafb;
+}
+
+.dropdownItemStatic {
+  display: block;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.userButton {
+  font-size: 0.9rem;
+  color: #cbd5f5;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.userButton:hover {
+  background: rgba(148, 163, 184, 0.16);
+  color: #f9fafb;
+}

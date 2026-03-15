@@ -2,8 +2,10 @@ package com.example.movierecommendation.auth.controller;
 
 import com.example.movierecommendation.auth.dto.AuthResponse;
 import com.example.movierecommendation.auth.dto.ChangePasswordRequest;
+import com.example.movierecommendation.auth.dto.FavoriteGenresRequest;
 import com.example.movierecommendation.auth.dto.LoginRequest;
 import com.example.movierecommendation.auth.dto.RegisterRequest;
+import com.example.movierecommendation.auth.dto.UpdateProfileRequest;
 import com.example.movierecommendation.auth.service.AuthService;
 import com.example.movierecommendation.common.dto.ApiMessage;
 import com.example.movierecommendation.common.dto.BaseResponse;
@@ -39,6 +41,20 @@ public class AuthController {
     public ResponseEntity<BaseResponse<UserProfileResponse>> me() {
         UserProfileResponse profile = authService.getCurrentUserProfile();
         return ResponseEntity.ok(BaseResponse.ok(profile));
+    }
+
+    @PatchMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<BaseResponse<UserProfileResponse>> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
+        UserProfileResponse profile = authService.updateProfile(request);
+        return ResponseEntity.ok(BaseResponse.ok(profile));
+    }
+
+    @PutMapping("/me/favorite-genres")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<BaseResponse<ApiMessage>> setFavoriteGenres(@Valid @RequestBody FavoriteGenresRequest request) {
+        authService.setFavoriteGenres(request.getGenreIds());
+        return ResponseEntity.ok(BaseResponse.ok(ApiMessage.ok("Favorite genres updated")));
     }
 
     @PostMapping("/change-password")

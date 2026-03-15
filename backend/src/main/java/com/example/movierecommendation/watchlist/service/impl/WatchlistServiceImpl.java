@@ -66,6 +66,15 @@ public class WatchlistServiceImpl implements WatchlistService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean isInWatchlist(Long movieId) {
+        return SecurityUtils.getCurrentUsername()
+                .flatMap(username -> userRepository.findByUsername(username))
+                .map(user -> watchlistRepository.existsByUserIdAndMovieId(user.getId(), movieId))
+                .orElse(false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Page<MovieListResponse> getCurrentUserWatchlist(Pageable pageable) {
         String username = SecurityUtils.getCurrentUsername()
                 .orElseThrow(() -> new IllegalStateException("Authentication required"));

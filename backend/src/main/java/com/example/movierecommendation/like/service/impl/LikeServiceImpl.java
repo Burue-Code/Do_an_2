@@ -51,4 +51,14 @@ public class LikeServiceImpl implements LikeService {
             return new ToggleLikeResponse(true);
         }
     }
+
+    @Override
+    public boolean isLiked(Long movieId) {
+        return SecurityUtils.getCurrentUsername()
+                .flatMap(username -> {
+                    var user = userRepository.findByUsername(username);
+                    return user.map(u -> movieLikeRepository.existsByUserIdAndMovieId(u.getId(), movieId));
+                })
+                .orElse(false);
+    }
 }

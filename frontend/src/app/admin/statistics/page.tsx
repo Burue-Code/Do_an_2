@@ -36,7 +36,7 @@ export default function AdminStatisticsPage() {
       {isError && (
         <p>
           Không thể tải thống kê.{' '}
-          {firstError?.message ?? 'Vui lòng kiểm tra lại kết nối và backend (dashboard API).}
+          {firstError?.message ?? 'Vui lòng kiểm tra lại kết nối và backend (dashboard API).'}
         </p>
       )}
 

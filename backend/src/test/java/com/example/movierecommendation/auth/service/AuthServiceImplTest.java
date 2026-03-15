@@ -4,23 +4,26 @@ import com.example.movierecommendation.auth.dto.AuthResponse;
 import com.example.movierecommendation.auth.dto.LoginRequest;
 import com.example.movierecommendation.auth.dto.RegisterRequest;
 import com.example.movierecommendation.auth.service.impl.AuthServiceImpl;
+import com.example.movierecommendation.genre.repository.GenreRepository;
 import com.example.movierecommendation.role.entity.Role;
 import com.example.movierecommendation.role.repository.RoleRepository;
+import com.example.movierecommendation.security.JwtTokenProvider;
 import com.example.movierecommendation.user.dto.UserProfileResponse;
 import com.example.movierecommendation.user.entity.User;
 import com.example.movierecommendation.user.mapper.UserMapper;
+import com.example.movierecommendation.user.repository.UserGenreRepository;
 import com.example.movierecommendation.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.example.movierecommendation.security.JwtTokenProvider;
 
 import java.util.Optional;
 
@@ -33,6 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class AuthServiceImplTest {
 
     @Mock
@@ -42,11 +46,16 @@ class AuthServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
+    private UserGenreRepository userGenreRepository;
+
+    @Mock
+    private GenreRepository genreRepository;
+
+    @Mock
     private RoleRepository roleRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
-
 
     @Mock
     private Authentication authentication;
@@ -70,12 +79,15 @@ class AuthServiceImplTest {
         authService = new AuthServiceImpl(
                 authenticationManager,
                 userRepository,
+                userGenreRepository,
+                genreRepository,
                 roleRepository,
                 passwordEncoder,
                 jwtTokenProvider,
                 userMapper
         );
     }
+
 
     @Test
     void register_shouldCreateUserAndReturnAuthResponse() {
@@ -97,10 +109,6 @@ class AuthServiceImplTest {
 
         given(userRepository.save(any(User.class))).willReturn(savedUser);
 
-        given(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .willReturn(authentication);
-        given(authentication.getName()).willReturn("john");
-        given(userRepository.findByUsername("john")).willReturn(Optional.of(savedUser));
         given(jwtTokenProvider.generateToken(any(Authentication.class))).willReturn("test-access-token");
 
         UserProfileResponse profile = new UserProfileResponse();
@@ -108,7 +116,7 @@ class AuthServiceImplTest {
         profile.setUsername("john");
         profile.setFullName("John Doe");
         profile.setRole("ROLE_USER");
-        given(userMapper.toUserProfileResponse(savedUser)).willReturn(profile);
+        given(userMapper.toUserProfileResponse(any(User.class))).willReturn(profile);
 
         AuthResponse response = authService.register(request);
 
@@ -120,11 +128,17 @@ class AuthServiceImplTest {
         verify(roleRepository).findByName("ROLE_USER");
         verify(passwordEncoder).encode("password123");
         verify(userRepository).save(any(User.class));
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtTokenProvider).generateToken(any(Authentication.class));
-        verify(userRepository).findByUsername("john");
-        verify(userMapper).toUserProfileResponse(savedUser);
-        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder, userMapper, jwtTokenProvider);
+        verify(userMapper).toUserProfileResponse(any(User.class));
+        verifyNoMoreInteractions(
+                userRepository,
+                userGenreRepository,
+                genreRepository,
+                roleRepository,
+                passwordEncoder,
+                userMapper,
+                jwtTokenProvider
+        );
     }
 
     @Test
@@ -141,7 +155,17 @@ class AuthServiceImplTest {
                 .hasMessageContaining("Username already exists");
 
         verify(userRepository).existsByUsername("john");
-        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder);
+        verifyNoMoreInteractions(
+                userRepository,
+                userGenreRepository,
+                genreRepository,
+                roleRepository,
+                passwordEncoder,
+                userMapper,
+                jwtTokenProvider,
+                authenticationManager,
+                authentication
+        );
     }
 
     @Test
@@ -179,7 +203,16 @@ class AuthServiceImplTest {
         verify(jwtTokenProvider).generateToken(any(Authentication.class));
         verify(userRepository).findByUsername("john");
         verify(userMapper).toUserProfileResponse(user);
-        verifyNoMoreInteractions(userRepository, roleRepository, passwordEncoder, userMapper, jwtTokenProvider);
+        verifyNoMoreInteractions(
+                userRepository,
+                userGenreRepository,
+                genreRepository,
+                roleRepository,
+                passwordEncoder,
+                userMapper,
+                jwtTokenProvider,
+                authenticationManager,
+                authentication
+        );
     }
 }
-
