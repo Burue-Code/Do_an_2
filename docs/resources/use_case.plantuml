@@ -1,0 +1,82 @@
+@startuml
+left to right direction
+
+actor "Khách vãng lai" as Guest
+actor "Người dùng" as User
+actor "Admin" as Admin
+
+rectangle "Hệ thống gợi ý phim theo thể loại" {
+
+  package "Chức năng cơ bản" {
+    usecase "Đăng ký" as UC1
+    usecase "Đăng nhập" as UC2
+    usecase "Tìm kiếm phim" as UC3
+    usecase "Xem thông tin phim" as UC4
+    usecase "Xem phim" as UC5
+  }
+
+  package "Tương tác người dùng" {
+    usecase "Thích phim" as UC6
+    usecase "Lưu phim theo dõi" as UC7
+    usecase "Bình luận phim" as UC9
+    usecase "Đánh giá phim" as UC10
+  }
+
+  package "Cá nhân hóa" {
+    usecase "Chọn thể loại yêu thích" as UC8
+    usecase "Xem lịch sử xem" as UC11
+    usecase "Gợi ý phim phù hợp" as UC13
+    usecase "Tiếp tục xem phim" as UC14
+  }
+
+  package "Tài khoản" {
+    usecase "Quản lý thông tin tài khoản" as UC12
+  }
+
+  package "Quản trị hệ thống" {
+    usecase "Quản lý phim" as UC15
+    usecase "Quản lý thể loại" as UC16
+    usecase "Quản lý người dùng" as UC17
+    usecase "Quản lý lịch chiếu" as UC18
+    usecase "Thống kê xu hướng" as UC19
+    usecase "Gán thể loại cho phim" as UC20
+    usecase "Quản lý diễn viên" as UC21
+    usecase "Quản lý đạo diễn" as UC22
+    usecase "Quản lý tập phim" as UC23
+  }
+}
+
+Guest --> UC1
+Guest --> UC2
+Guest --> UC3
+Guest --> UC4
+Guest --> UC5
+
+User --> UC3
+User --> UC4
+User --> UC5
+User --> UC6
+User --> UC7
+User --> UC8
+User --> UC9
+User --> UC10
+User --> UC11
+User --> UC12
+User --> UC13
+User --> UC14
+
+Admin --> UC15
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+Admin --> UC19
+Admin --> UC20
+Admin --> UC21
+Admin --> UC22
+Admin --> UC23
+
+UC13 ..> UC8 : <<include>>
+UC13 ..> UC11 : <<include>>
+UC14 ..> UC5 : <<extend>>
+
+@enduml

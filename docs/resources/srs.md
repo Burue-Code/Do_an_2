@@ -506,3 +506,17 @@ Hệ thống hoạt động ổn định với tối thiểu 10.000 người dù
 ## 11. Kết luận
 
 Tài liệu SRS này xác định phạm vi, chức năng, dữ liệu, yêu cầu phi chức năng và đặc tả Use Case của hệ thống gợi ý phim theo thể loại. Nội dung của tài liệu phản ánh đầy đủ các phân tích đã thống nhất: hệ thống không chỉ phục vụ việc xem phim mà còn tập trung vào cá nhân hóa trải nghiệm người dùng thông qua lịch sử xem, thể loại yêu thích, lượt thích và đánh giá. Đây là cơ sở quan trọng để tiếp tục thiết kế kiến trúc, xây dựng giao diện, triển khai cơ sở dữ liệu, lập trình chức năng và kiểm thử hệ thống trong giai đoạn tiếp theo.
+
+### 11.1 Liên kết kiểm thử & demo giai đoạn 6
+
+Trong giai đoạn 6 – Kiểm thử & hoàn thiện, nhóm đã bổ sung:
+
+- **Test backend (Task 14.1)**: Viết unit/service test cho các module chính như `auth`, `user`, `movie`, `genre`, `comment`, `rating`, `like`, `watchlist`, `watchhistory`, `recommendation`, `dashboard`.  
+  Các test này giúp đảm bảo logic nghiệp vụ tuân thủ các quy tắc ở mục 3, 4 và 7 của SRS.
+- **Test frontend (Task 14.2)**: Thực hiện kiểm thử UI/manual cho các luồng chính (đăng nhập/đăng ký, xem phim, tương tác, gợi ý phim, admin) theo kế hoạch và test case mô tả trong:
+  - `docs/frontend/ui_test_plan.md`
+  - `docs/frontend/ui_test_cases_main_flows.md`
+  - `docs/frontend/ui_test_report_phase_6.md`
+- **Chuẩn bị demo (Task 14.3)**: Xây dựng outline slide và kịch bản demo để trình bày các luồng quan trọng: đăng nhập, xem & tương tác với phim, gợi ý phim, quản trị và thống kê.
+
+Các tài liệu test và demo này được dùng như phụ lục thực thi nhằm chứng minh rằng hệ thống đáp ứng tiêu chí nghiệm thu ở mục 10, đồng thời hỗ trợ quá trình trình bày và bảo vệ đồ án.
