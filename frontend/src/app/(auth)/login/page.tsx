@@ -20,10 +20,24 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await login.mutateAsync({ username, password });
-      router.push('/');
+      const auth = await login.mutateAsync({ username, password });
+      const role = auth.user.role;
+      if (role === 'ROLE_ADMIN' || role === 'ADMIN') {
+        router.push('/admin/statistics');
+      } else {
+        router.push('/');
+      }
     } catch (e: unknown) {
-      setError('Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.');
+      const err = e as { response?: { status?: number; data?: { message?: string } } };
+      const status = err.response?.status;
+      const msg = err.response?.data?.message;
+      if (status === 403 && msg) {
+        setError(msg);
+      } else if (typeof msg === 'string' && msg.length > 0) {
+        setError(msg);
+      } else {
+        setError('Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại.');
+      }
     }
   }
 

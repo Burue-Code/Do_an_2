@@ -11,14 +11,14 @@ export interface UpdateGenrePayload {
 
 export async function createGenre(payload: CreateGenrePayload): Promise<Genre> {
   const { data } = await api.post<Genre>('/admin/genres', {
-    genreName: payload.name
+    name: payload.name
   });
   return data;
 }
 
 export async function updateGenre(id: number, payload: UpdateGenrePayload): Promise<Genre> {
   const { data } = await api.put<Genre>(`/admin/genres/${id}`, {
-    genreName: payload.name
+    name: payload.name
   });
   return data;
 }

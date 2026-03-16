@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 
 interface AdminLayoutProps {
@@ -14,12 +14,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { user, isLoading, isAuthenticated } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     if (!isLoading && !isAuthenticated) {
       router.push('/login');
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [mounted, isLoading, isAuthenticated, router]);
+
+  if (!mounted) {
+    return (
+      <div className="admin-guard">
+        <p>Đang tải...</p>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -55,6 +69,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const links = [
     { href: '/admin/movies', label: 'Phim' },
     { href: '/admin/genres', label: 'Thể loại' },
+    { href: '/admin/actors', label: 'Diễn viên' },
+    { href: '/admin/directors', label: 'Đạo diễn' },
     { href: '/admin/users', label: 'Người dùng' },
     { href: '/admin/statistics', label: 'Thống kê' }
   ];

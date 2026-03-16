@@ -14,3 +14,7 @@ export async function unlockUser(id: number): Promise<void> {
   await api.patch<void>(`/admin/users/${id}/unlock`);
 }
 
+export async function changeUserRole(id: number, role: 'ROLE_ADMIN' | 'ROLE_USER'): Promise<void> {
+  await api.patch<void>(`/admin/users/${id}/role`, { role });
+}
+

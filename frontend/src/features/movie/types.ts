@@ -13,6 +13,7 @@ export interface MovieDetail {
   title: string;
   description: string | null;
   releaseYear: number | null;
+  createdAt?: string | null;
   poster: string | null;
   duration: number | null;
   status: string | null;

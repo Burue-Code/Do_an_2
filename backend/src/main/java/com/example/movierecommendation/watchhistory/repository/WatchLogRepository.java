@@ -15,5 +15,9 @@ public interface WatchLogRepository extends JpaRepository<WatchLog, Long> {
     List<WatchLog> findByUser_IdOrderByLastWatchedAtDesc(Long userId, Pageable pageable);
 
     Optional<WatchLog> findByUserAndMovie_IdAndEpisodeId(User user, Long movieId, Long episodeId);
+
+    long countByMovie_Id(Long movieId);
+
+    long countByMovie_IdAndCompletedTrue(Long movieId);
 }
 

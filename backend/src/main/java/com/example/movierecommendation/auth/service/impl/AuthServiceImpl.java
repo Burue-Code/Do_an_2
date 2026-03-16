@@ -3,6 +3,7 @@ package com.example.movierecommendation.auth.service.impl;
 import com.example.movierecommendation.auth.dto.AuthResponse;
 import com.example.movierecommendation.auth.dto.ChangePasswordRequest;
 import com.example.movierecommendation.auth.dto.LoginRequest;
+import com.example.movierecommendation.auth.service.LoginFailureRecorder;
 import com.example.movierecommendation.auth.dto.RegisterRequest;
 import com.example.movierecommendation.auth.dto.UpdateProfileRequest;
 import com.example.movierecommendation.auth.service.AuthService;
@@ -19,6 +20,8 @@ import com.example.movierecommendation.user.mapper.UserMapper;
 import com.example.movierecommendation.user.repository.UserGenreRepository;
 import com.example.movierecommendation.user.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,13 +29,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -42,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
+    private final LoginFailureRecorder loginFailureRecorder;
 
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
@@ -50,7 +60,8 @@ public class AuthServiceImpl implements AuthService {
                            RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder,
                            JwtTokenProvider jwtTokenProvider,
-                           UserMapper userMapper) {
+                           UserMapper userMapper,
+                           LoginFailureRecorder loginFailureRecorder) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.userGenreRepository = userGenreRepository;
@@ -59,6 +70,7 @@ public class AuthServiceImpl implements AuthService {
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userMapper = userMapper;
+        this.loginFailureRecorder = loginFailureRecorder;
     }
 
     @Override
@@ -107,19 +119,48 @@ public class AuthServiceImpl implements AuthService {
         return response;
     }
 
-    @Override
-    public AuthResponse login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+    private static final int MAX_FAILED_ATTEMPTS = 5;
 
+    @Override
+    @Transactional
+    public AuthResponse login(LoginRequest request) {
+        String username = request.getUsername();
+        Optional<User> userOpt = userRepository.findByUsername(username);
+
+        if (userOpt.isEmpty()) {
+            throw new BadCredentialsException("Tên đăng nhập hoặc mật khẩu không đúng.");
+        }
+
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            // Ghi nhận lần sai trong transaction riêng (REQUIRES_NEW) để commit trước khi ném exception
+            loginFailureRecorder.recordFailedAttempt(username);
+            throw new BadCredentialsException("Tên đăng nhập hoặc mật khẩu không đúng.");
+        }
+
+        user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+
+        if (user.isLocked()) {
+            throw new LockedException("Tài khoản đã bị khóa do đăng nhập sai quá " + MAX_FAILED_ATTEMPTS + " lần. Vui lòng liên hệ quản trị viên.");
+        }
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPasswordHash(),
+                true,
+                true,
+                true,
+                true,
+                Collections.singletonList(new SimpleGrantedAuthority(
+                        user.getRole() != null ? user.getRole().getName() : "ROLE_USER"))
+        );
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
         String token = jwtTokenProvider.generateToken(authentication);
         if (token == null) {
             throw new IllegalStateException("Cannot generate token");
         }
-
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new IllegalStateException("User not found"));
 
         AuthResponse response = new AuthResponse();
         response.setAccessToken(token);

@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MovieDirectorRepository extends JpaRepository<MovieDirector, com.example.movierecommendation.movie.entity.MovieDirectorId> {
 
     List<MovieDirector> findByMovieId(Long movieId);
+
+    long countByDirectorId(Long directorId);
 }

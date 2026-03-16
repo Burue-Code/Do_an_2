@@ -8,6 +8,7 @@ public class MovieDetailResponse {
     private String title;
     private String description;
     private Integer releaseYear;
+    private java.time.LocalDateTime createdAt;
     private String poster;
     private Integer duration;
     private String status;
@@ -47,6 +48,14 @@ public class MovieDetailResponse {
 
     public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
+    }
+
+    public java.time.LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.time.LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getPoster() {

@@ -66,6 +66,9 @@ class AuthServiceImplTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
+    @Mock
+    private LoginFailureRecorder loginFailureRecorder;
+
     private AuthServiceImpl authService;
 
     private Role userRole;
@@ -84,7 +87,8 @@ class AuthServiceImplTest {
                 roleRepository,
                 passwordEncoder,
                 jwtTokenProvider,
-                userMapper
+                userMapper,
+                loginFailureRecorder
         );
     }
 

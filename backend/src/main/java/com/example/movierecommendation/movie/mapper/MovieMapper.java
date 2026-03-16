@@ -36,6 +36,7 @@ public class MovieMapper {
         dto.setTitle(movie.getTitle());
         dto.setDescription(movie.getDescription());
         dto.setReleaseYear(movie.getReleaseYear());
+        dto.setCreatedAt(movie.getCreatedAt());
         dto.setPoster(movie.getPoster());
         dto.setDuration(movie.getDuration());
         dto.setStatus(movie.getStatus());

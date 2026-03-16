@@ -37,6 +37,9 @@ public class User {
     @Column(name = "locked", nullable = false)
     private boolean locked = false;
 
+    @Column(name = "failed_login_attempts", nullable = false)
+    private int failedLoginAttempts = 0;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -117,6 +120,14 @@ public class User {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
     }
 }
 

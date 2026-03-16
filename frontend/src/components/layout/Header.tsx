@@ -145,6 +145,15 @@ export function Header() {
               {userMenuOpen && (
                 <div className={styles.dropdownMenu}>
                   <span className={styles.dropdownItemStatic}>{user.username}</span>
+                  {user.role === 'ROLE_ADMIN' || user.role === 'ADMIN' ? (
+                    <Link
+                      href="/admin/statistics"
+                      className={styles.dropdownItem}
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      Trang quản lý
+                    </Link>
+                  ) : null}
                   <Link
                     href="/account/watchlist#danh-sach-theo-doi"
                     className={styles.dropdownItem}

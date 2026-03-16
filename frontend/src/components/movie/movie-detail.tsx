@@ -11,6 +11,16 @@ import { MovieDetailRecommendations } from './movie-detail-recommendations';
 
 interface MovieDetailProps {
   movie: MovieDetailType;
+  /** Hiện nút Xem phim + Theo dõi + Thích; mặc định true (trang user) */
+  showActions?: boolean;
+  /** Hiện danh sách tập xem được; mặc định true (trang user) */
+  showEpisodes?: boolean;
+  /** Hiện phim đề xuất; mặc định true (trang user) */
+  showRecommendations?: boolean;
+  /** Hiện khu vực bình luận; mặc định true (trang user) */
+  showComments?: boolean;
+  /** Nội dung thêm trong khối meta (vd: nút Chỉnh sửa thông tin cho admin) */
+  extraMetaContent?: React.ReactNode;
 }
 
 function formatRating(score: number) {
@@ -25,7 +35,14 @@ function getMovieTypeLabel(movieType: number | null | undefined): string | null 
   return `Loại ${movieType}`;
 }
 
-export function MovieDetail({ movie }: MovieDetailProps) {
+export function MovieDetail({
+  movie,
+  showActions = true,
+  showEpisodes = true,
+  showRecommendations = true,
+  showComments = true,
+  extraMetaContent
+}: MovieDetailProps) {
   const posterUrl = getPosterUrl(movie.poster);
   const movieTypeLabel = getMovieTypeLabel(movie.movieType);
 
@@ -56,13 +73,15 @@ export function MovieDetail({ movie }: MovieDetailProps) {
           )}
           <div className="movie-detail-title-row">
             <h1 className="movie-detail-title">{movie.title}</h1>
-            <div className="movie-detail-actions">
-              <Link href={`/movies/${movie.id}/watch`} className="movie-detail-watch-btn">
-                Xem phim
-              </Link>
-              <WatchlistButton movieId={movie.id} />
-              <LikeButton movieId={movie.id} />
-            </div>
+            {showActions && (
+              <div className="movie-detail-actions">
+                <Link href={`/movies/${movie.id}/watch`} className="movie-detail-watch-btn">
+                  Xem phim
+                </Link>
+                <WatchlistButton movieId={movie.id} />
+                <LikeButton movieId={movie.id} />
+              </div>
+            )}
           </div>
           <RatingStars
             movieId={movie.id}
@@ -112,23 +131,32 @@ export function MovieDetail({ movie }: MovieDetailProps) {
               <p className="movie-detail-description">{movie.description}</p>
             </section>
           )}
+          {extraMetaContent && (
+            <div className="movie-detail-extra-meta">
+              {extraMetaContent}
+            </div>
+          )}
         </div>
       </div>
 
-      <MovieDetailEpisodes
-        movieId={movie.id}
-        totalEpisodes={movie.totalEpisodes}
-        movieType={movie.movieType}
-      />
+      {showEpisodes && (
+        <MovieDetailEpisodes
+          movieId={movie.id}
+          totalEpisodes={movie.totalEpisodes}
+          movieType={movie.movieType}
+        />
+      )}
 
-      <MovieDetailRecommendations currentMovieId={movie.id} />
+      {showRecommendations && <MovieDetailRecommendations currentMovieId={movie.id} />}
 
-      <section className="movie-detail-comments" aria-labelledby="comments-heading">
-        <h2 id="comments-heading" className="movie-detail-section-title">
-          Bình luận
-        </h2>
-        <CommentList movieId={movie.id} />
-      </section>
+      {showComments && (
+        <section className="movie-detail-comments" aria-labelledby="comments-heading">
+          <h2 id="comments-heading" className="movie-detail-section-title">
+            Bình luận
+          </h2>
+          <CommentList movieId={movie.id} />
+        </section>
+      )}
     </article>
   );
 }
