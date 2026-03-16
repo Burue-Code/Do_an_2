@@ -7,6 +7,7 @@ public class ContinueWatchingItemResponse {
     private MovieListResponse movie;
     private Integer progressPercent;
     private Integer episodeNumber;
+    private Integer durationWatchedMinutes;
 
     public MovieListResponse getMovie() {
         return movie;
@@ -30,5 +31,13 @@ public class ContinueWatchingItemResponse {
 
     public void setEpisodeNumber(Integer episodeNumber) {
         this.episodeNumber = episodeNumber;
+    }
+
+    public Integer getDurationWatchedMinutes() {
+        return durationWatchedMinutes;
+    }
+
+    public void setDurationWatchedMinutes(Integer durationWatchedMinutes) {
+        this.durationWatchedMinutes = durationWatchedMinutes;
     }
 }

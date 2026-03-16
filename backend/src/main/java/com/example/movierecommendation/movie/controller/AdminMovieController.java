@@ -141,6 +141,7 @@ public class AdminMovieController {
             dto.setEpisodeNumber(e.getEpisodeNumber());
             dto.setVideoUrl(e.getVideoUrl());
             dto.setReleaseTime(e.getReleaseTime());
+            dto.setDurationMinutes(e.getDurationMinutes());
             return dto;
         }).toList();
         return ResponseEntity.ok(BaseResponse.ok(list));

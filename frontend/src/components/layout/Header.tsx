@@ -162,7 +162,7 @@ export function Header() {
                     Danh sách theo dõi
                   </Link>
                   <Link
-                    href="/account/watchlist"
+                    href="/account/history"
                     className={styles.dropdownItem}
                     onClick={() => setUserMenuOpen(false)}
                   >

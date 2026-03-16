@@ -149,8 +149,17 @@ function ContinueWatchingSection() {
       )}
       {!isLoading && !isError && items.length > 0 && (
         <div className={styles.horizontalList}>
-          {items.map((item) => (
-            <Link key={item.movie.id} href={`/movies/${item.movie.id}/watch`} className={styles.horizontalCard}>
+          {items.map((item) => {
+            const seconds =
+              item.durationWatchedMinutes && item.durationWatchedMinutes > 0
+                ? item.durationWatchedMinutes
+                : null;
+            const href =
+              seconds != null
+                ? `/movies/${item.movie.id}/watch?pos=${seconds}`
+                : `/movies/${item.movie.id}/watch`;
+            return (
+              <Link key={item.movie.id} href={href} className={styles.horizontalCard}>
               <div className={styles.horizontalCardPoster}>
                 {getPosterUrl(item.movie.poster) ? (
                   <Image
@@ -174,7 +183,8 @@ function ContinueWatchingSection() {
               <span className={styles.horizontalCardTitle}>{item.movie.title}</span>
               {item.progressPercent != null && <span className={styles.progressLabel}>{item.progressPercent}%</span>}
             </Link>
-          ))}
+            );
+          })}
         </div>
       )}
       {!isLoading && !isError && items.length === 0 && (

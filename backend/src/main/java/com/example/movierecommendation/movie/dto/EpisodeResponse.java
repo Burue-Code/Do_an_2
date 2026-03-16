@@ -8,6 +8,7 @@ public class EpisodeResponse {
     private Integer episodeNumber;
     private String videoUrl;
     private LocalDateTime releaseTime;
+    private Integer durationMinutes;
 
     public Long getId() {
         return id;
@@ -39,5 +40,13 @@ public class EpisodeResponse {
 
     public void setReleaseTime(LocalDateTime releaseTime) {
         this.releaseTime = releaseTime;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
     }
 }
