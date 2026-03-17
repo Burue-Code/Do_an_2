@@ -4,9 +4,12 @@ import com.example.movierecommendation.common.dto.BaseResponse;
 import com.example.movierecommendation.recommendation.dto.RecommendationItemResponse;
 import com.example.movierecommendation.recommendation.dto.RecommendationResponse;
 import com.example.movierecommendation.recommendation.service.RecommendationService;
+import com.example.movierecommendation.user.entity.User;
+import com.example.movierecommendation.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,9 +22,12 @@ import java.util.List;
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
+    private final UserRepository userRepository;
 
-    public RecommendationController(RecommendationService recommendationService) {
+    public RecommendationController(RecommendationService recommendationService,
+                                    UserRepository userRepository) {
         this.recommendationService = recommendationService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/me")
@@ -45,21 +51,11 @@ public class RecommendationController {
     }
 
     private Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
+        Long userId = getCurrentUserIdOrNull();
+        if (userId == null) {
             throw new IllegalStateException("User must be authenticated");
         }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof org.springframework.security.core.userdetails.User) {
-            // Ở đây giả định username là userId dạng số; nếu project dùng UserDetails custom,
-            // RecommendationService có thể được chỉnh sửa sau cho phù hợp.
-            String username = ((org.springframework.security.core.userdetails.User) principal).getUsername();
-            return Long.parseLong(username);
-        }
-        if (principal instanceof String) {
-            return Long.parseLong((String) principal);
-        }
-        throw new IllegalStateException("Cannot extract user id from principal");
+        return userId;
     }
 
     private Long getCurrentUserIdOrNull() {
@@ -68,22 +64,21 @@ public class RecommendationController {
             return null;
         }
         Object principal = authentication.getPrincipal();
-        if (principal instanceof org.springframework.security.core.userdetails.User) {
-            String username = ((org.springframework.security.core.userdetails.User) principal).getUsername();
-            return tryParseLong(username);
-        }
-        if (principal instanceof String) {
-            return tryParseLong((String) principal);
-        }
-        return null;
-    }
+        String username = null;
 
-    private Long tryParseLong(String value) {
-        try {
-            return Long.parseLong(value);
-        } catch (NumberFormatException ex) {
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else if (principal instanceof String) {
+            username = (String) principal;
+        }
+
+        if (username == null || username.isBlank()) {
             return null;
         }
+
+        return userRepository.findByUsername(username)
+                .map(User::getId)
+                .orElse(null);
     }
 }
 

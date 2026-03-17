@@ -8,5 +8,7 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findByMovie_IdOrderByIdAsc(Long movieId);
+
+    List<Schedule> findAllByOrderByDayOfWeekAscAirTimeAscIdAsc();
 }
 

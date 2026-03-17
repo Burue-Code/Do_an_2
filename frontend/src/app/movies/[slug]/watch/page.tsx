@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useParams, useSearchParams } from 'next/navigation';
+import { useCallback, useRef } from 'react';
 import { useMovieDetail, useMovieEpisodes, useMovieCast, useTrending, useTop } from '@/features/movie/hooks';
 import { useRecommendationsHome } from '@/features/recommendation/hooks';
 import { VideoPlayer } from '@/components/watch/video-player';
@@ -11,6 +12,7 @@ import { RatingStars } from '@/components/movie/rating-stars';
 import { LikeButton } from '@/components/movie/like-button';
 import { WatchlistButton } from '@/components/movie/watchlist-button';
 import { getPosterUrl } from '@/lib/image';
+import { saveWatchLog } from '@/features/watch-history/api';
 import styles from './watch.module.css';
 
 function getMovieTypeLabel(movieType: number | null | undefined): string {
@@ -26,6 +28,8 @@ export default function WatchPage() {
   const slug = params?.slug as string | undefined;
   const id = slug ? parseInt(slug, 10) : null;
   const epParam = searchParams?.get('ep');
+  const posParam = searchParams?.get('pos');
+  const initialPosSeconds = posParam ? Number.parseInt(posParam, 10) || null : null;
 
   const { data: movie, isLoading, isError } = useMovieDetail(id);
   const { data: episodes = [] } = useMovieEpisodes(id);
@@ -33,6 +37,35 @@ export default function WatchPage() {
   const { data: trendingData } = useTrending(8);
   const { data: topData } = useTop(8);
   const { data: recData } = useRecommendationsHome(12);
+  const lastSentRef = useRef(0);
+
+  const handleProgress = useCallback(
+    (currentSeconds: number, totalSeconds: number) => {
+      if (!movie) return;
+      if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return;
+      if (currentSeconds < 5) return;
+
+      const last = lastSentRef.current;
+      if (currentSeconds - last < 15 && currentSeconds < totalSeconds - 2) {
+        return;
+      }
+
+      lastSentRef.current = currentSeconds;
+
+      const durationSeconds = Math.max(1, Math.floor(currentSeconds));
+      const payload = {
+        movieId: movie.id,
+        episodeId: currentEpisode?.id ?? (episodes[0]?.id ?? null),
+        durationWatched: durationSeconds,
+        completed: currentSeconds >= totalSeconds - 2
+      };
+
+      // Không chờ kết quả, chỉ fire-and-forget
+      saveWatchLog(payload).catch(() => {});
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [movie, episodes]
+  );
 
   if (id == null || isNaN(id)) {
     return (
@@ -64,8 +97,20 @@ export default function WatchPage() {
   const posterUrl = getPosterUrl(movie.poster);
   const epNum = epParam ? parseInt(epParam, 10) : null;
   const currentEpisode = epNum != null && !isNaN(epNum) ? episodes.find((e) => e.episodeNumber === epNum) : null;
+  const makeVideoSrc = (raw: string | null | undefined): string | null => {
+    if (!raw) return null;
+    const trimmed = raw.trim();
+    if (!trimmed) return null;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/')) {
+      return trimmed;
+    }
+    // Nếu chỉ lưu tên file (vd: "video_1_ep1.mp4") thì tự gắn vào /videos/
+    return `/videos/${trimmed}`;
+  };
   const videoSrc =
-    currentEpisode?.videoUrl ?? (episodes.length > 0 ? episodes[0].videoUrl : null) ?? '/videos/sample.mp4';
+    makeVideoSrc(currentEpisode?.videoUrl) ??
+    (episodes.length > 0 ? makeVideoSrc(episodes[0].videoUrl) : null) ??
+    '/videos/sample.mp4';
   const fromRec = (recData?.items?.map((i) => i.movie) ?? []).filter((m) => m.id !== movie.id).slice(0, 6);
   const trending = (trendingData ?? []).filter((m) => m.id !== movie.id).slice(0, 8);
   const top = (topData ?? []).filter((m) => m.id !== movie.id).slice(0, 8);
@@ -93,7 +138,13 @@ export default function WatchPage() {
       <section className={styles.main}>
         <div className={styles.playerSection}>
           <h1 className={styles.watchTitle}>{watchTitleText}</h1>
-          <VideoPlayer src={videoSrc} poster={posterUrl || movie.poster} title={movie.title} />
+          <VideoPlayer
+            src={videoSrc}
+            poster={posterUrl || movie.poster}
+            title={movie.title}
+            onProgressChange={handleProgress}
+            initialPositionSeconds={initialPosSeconds}
+          />
         </div>
 
         <div className={styles.contentGrid}>
@@ -121,6 +172,18 @@ export default function WatchPage() {
                     <dd>{movie.status || getMovieTypeLabel(movie.movieType) || '—'}</dd>
                   </dl>
                 </div>
+              </div>
+            </section>
+
+            <section className={styles.interactSection}>
+              <h2 className={styles.sectionTitle}>Tương tác</h2>
+              <div className={styles.interactRow}>
+                <WatchlistButton movieId={movie.id} />
+                <LikeButton movieId={movie.id} />
+                <RatingStars movieId={movie.id} initialScore={movie.ratingScore ?? 0} initialCount={movie.ratingCount ?? 0} />
+                <button type="button" className={styles.shareBtn} onClick={() => navigator.clipboard?.writeText(window.location.href)}>
+                  Chia sẻ
+                </button>
               </div>
             </section>
 
@@ -157,23 +220,6 @@ export default function WatchPage() {
               ) : (
                 <p className={styles.placeholderText}>Chưa có thông tin diễn viên, đạo diễn.</p>
               )}
-            </section>
-
-            <section className={styles.interactSection}>
-              <h2 className={styles.sectionTitle}>Tương tác</h2>
-              <div className={styles.interactRow}>
-                <WatchlistButton movieId={movie.id} />
-                <LikeButton movieId={movie.id} />
-                <RatingStars movieId={movie.id} initialScore={movie.ratingScore ?? 0} initialCount={movie.ratingCount ?? 0} />
-                <button type="button" className={styles.shareBtn} onClick={() => navigator.clipboard?.writeText(window.location.href)}>
-                  Chia sẻ
-                </button>
-              </div>
-            </section>
-
-            <section className={styles.commentsSection}>
-              <h2 className={styles.sectionTitle}>Bình luận</h2>
-              <CommentList movieId={movie.id} />
             </section>
 
             {(isSeries || hasEpisodes) && (
@@ -216,6 +262,11 @@ export default function WatchPage() {
                   <p className={styles.placeholderText}>Chưa có phim đề xuất. Đăng nhập hoặc kiểm tra kết nối API.</p>
                 )}
               </div>
+            </section>
+
+            <section className={styles.commentsSection}>
+              <h2 className={styles.sectionTitle}>Bình luận</h2>
+              <CommentList movieId={movie.id} />
             </section>
           </div>
 

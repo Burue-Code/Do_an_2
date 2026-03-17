@@ -120,7 +120,7 @@ public class AdminMovieController {
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
 
         AdminMovieStatsResponse resp = new AdminMovieStatsResponse();
-        resp.setCommentsCount(commentRepository.countByMovieId(id));
+        resp.setCommentsCount(commentRepository.countByMovie_Id(id));
         resp.setLikesCount(movieLikeRepository.countById_MovieId(id));
         resp.setRatingsCount(ratingRepository.countByMovieId(id));
         resp.setAverageRating(movie.getRatingScore() != null ? movie.getRatingScore() : 0f);
@@ -141,6 +141,7 @@ public class AdminMovieController {
             dto.setEpisodeNumber(e.getEpisodeNumber());
             dto.setVideoUrl(e.getVideoUrl());
             dto.setReleaseTime(e.getReleaseTime());
+            dto.setDurationMinutes(e.getDurationMinutes());
             return dto;
         }).toList();
         return ResponseEntity.ok(BaseResponse.ok(list));

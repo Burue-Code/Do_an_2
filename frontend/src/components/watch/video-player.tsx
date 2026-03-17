@@ -9,10 +9,13 @@ interface VideoPlayerProps {
   src: string | null;
   poster?: string | null;
   title: string;
+  onProgressChange?: (currentTime: number, duration: number) => void;
+  initialPositionSeconds?: number | null;
 }
 
-export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
+export function VideoPlayer({ src, poster, title, onProgressChange, initialPositionSeconds }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const hideTimerRef = useRef<number | null>(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -23,13 +26,34 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
   const [showQualityMenu, setShowQualityMenu] = useState(false);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [loadError, setLoadError] = useState(false);
+  const [showControls, setShowControls] = useState(true);
 
   const video = videoRef.current;
+
+  const scheduleHideControls = () => {
+    if (!playing) return;
+    if (hideTimerRef.current != null) {
+      window.clearTimeout(hideTimerRef.current);
+    }
+    hideTimerRef.current = window.setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+  };
+
+  const revealControls = () => {
+    setShowControls(true);
+    scheduleHideControls();
+  };
 
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    const onTimeUpdate = () => setCurrentTime(v.currentTime);
+    const onTimeUpdate = () => {
+      setCurrentTime(v.currentTime);
+      if (onProgressChange) {
+        onProgressChange(v.currentTime, Number.isFinite(v.duration) ? v.duration : 0);
+      }
+    };
     const onDurationChange = () => setDuration(v.duration);
     v.addEventListener('timeupdate', onTimeUpdate);
     v.addEventListener('durationchange', onDurationChange);
@@ -39,14 +63,39 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
     };
   }, []);
 
+  // Nhảy tới vị trí đã xem trước (nếu có)
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (!initialPositionSeconds || initialPositionSeconds <= 0) return;
+
+    const seek = () => {
+      const target = initialPositionSeconds;
+      const dur = Number.isFinite(v.duration) && v.duration > 0 ? v.duration : target;
+      v.currentTime = Math.min(target, Math.max(0, dur - 1));
+    };
+
+    if (v.readyState >= 1) {
+      seek();
+    } else {
+      v.addEventListener('loadedmetadata', seek, { once: true } as any);
+    }
+  }, [src, initialPositionSeconds]);
+
   const togglePlay = () => {
     if (!video) return;
     if (video.paused) {
       video.play();
       setPlaying(true);
+      revealControls();
     } else {
       video.pause();
       setPlaying(false);
+      setShowControls(true);
+      if (hideTimerRef.current != null) {
+        window.clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = null;
+      }
     }
   };
 
@@ -55,12 +104,14 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
     if (video) {
       video.currentTime = t;
       setCurrentTime(t);
+      revealControls();
     }
   };
 
   const skip = (delta: number) => {
     if (!video) return;
     video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + delta));
+    revealControls();
   };
 
   const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +121,7 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
       video.volume = v;
       setMuted(v === 0);
     }
+    revealControls();
   };
 
   const toggleMute = () => {
@@ -81,6 +133,7 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
       video.volume = 0;
       setMuted(true);
     }
+    revealControls();
   };
 
   const toggleFullscreen = () => {
@@ -93,6 +146,7 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
       document.exitFullscreen();
       setFullscreen(false);
     }
+    revealControls();
   };
 
   const formatTime = (s: number) => {
@@ -108,6 +162,19 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
     setLoadError(false);
   }, [src]);
 
+  useEffect(() => {
+    if (!playing) return;
+    setShowControls(true);
+    scheduleHideControls();
+    return () => {
+      if (hideTimerRef.current != null) {
+        window.clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playing, src]);
+
   if (!src) {
     return (
       <div className={styles.playerWrap}>
@@ -119,7 +186,11 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
   }
 
   return (
-    <div className={styles.playerWrap}>
+    <div
+      className={styles.playerWrap}
+      onMouseMove={revealControls}
+      onMouseEnter={revealControls}
+    >
       {loadError && (
         <div className={styles.placeholder}>
           <p>Không thể tải video. Kiểm tra file tại /public/videos/ hoặc đường dẫn nguồn.</p>
@@ -132,8 +203,14 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
         src={src}
         poster={poster || undefined}
         onClick={togglePlay}
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
+        onPlay={() => {
+          setPlaying(true);
+          revealControls();
+        }}
+        onPause={() => {
+          setPlaying(false);
+          setShowControls(true);
+        }}
         onError={() => setLoadError(true)}
         playsInline
       />
@@ -142,6 +219,7 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
           ▶
         </button>
       )}
+      {showControls && (
       <div className={styles.controls}>
         <div className={styles.progressWrap}>
           <input
@@ -204,6 +282,7 @@ export function VideoPlayer({ src, poster, title }: VideoPlayerProps) {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

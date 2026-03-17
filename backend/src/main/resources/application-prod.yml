@@ -12,5 +12,6 @@ spring:
 
 app:
   jwt:
-    secret: ${APP_JWT_SECRET:change-this-prod-secret}
+    # HS256 cần secret đủ dài (>= 32 bytes) để JJWT chấp nhận.
+    secret: ${APP_JWT_SECRET:change-this-prod-secret-please-override-32bytes}
     expiration-ms: ${APP_JWT_EXPIRATION_MS:86400000}

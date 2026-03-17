@@ -1,8 +1,12 @@
 package com.example.movierecommendation.movie.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class AdminScheduleRequest {
+
+    @NotNull
+    private Long movieId;
 
     @NotBlank
     private String dayOfWeek;
@@ -11,6 +15,14 @@ public class AdminScheduleRequest {
     private String airTime;
 
     private String note;
+
+    public Long getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
+    }
 
     public String getDayOfWeek() {
         return dayOfWeek;
@@ -36,4 +48,3 @@ public class AdminScheduleRequest {
         this.note = note;
     }
 }
-

@@ -68,9 +68,9 @@ export default function MoviesPage() {
 
   return (
     <div key={filterKey}>
-      <p className={styles.selectionBar} aria-live="polite">
-        {selectionText}
-      </p>
+      <header className={styles.selectionBar} aria-live="polite">
+        <h1>{selectionText}</h1>
+      </header>
       {isLoading && <p className="movies-page-loading">Đang tải...</p>}
       {isError && (
         <div className="movies-page-error-box">

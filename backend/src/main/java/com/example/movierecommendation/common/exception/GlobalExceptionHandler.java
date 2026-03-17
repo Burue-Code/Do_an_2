@@ -27,6 +27,14 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.error("Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng thử lại."));
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<BaseResponse<Void>> handleNotFoundException(NotFoundException ex) {
+        String message = ex.getMessage() != null ? ex.getMessage() : "Không tìm thấy tài nguyên.";
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(BaseResponse.error(message));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<BaseResponse<Void>> handleIllegalArgumentException(IllegalArgumentException ex) {
         String message = ex.getMessage();

@@ -72,6 +72,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/actors', label: 'Diễn viên' },
     { href: '/admin/directors', label: 'Đạo diễn' },
     { href: '/admin/users', label: 'Người dùng' },
+    { href: '/admin/comments', label: 'Bình luận' },
+    { href: '/admin/comment-reports', label: 'Report bình luận' },
+    { href: '/admin/schedules', label: 'Lịch chiếu' },
     { href: '/admin/statistics', label: 'Thống kê' }
   ];
 

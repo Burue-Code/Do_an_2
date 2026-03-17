@@ -92,7 +92,14 @@ export default function AdminCreateMoviePage() {
             value={movieType ?? ''}
             onChange={(e) => {
               const v = e.target.value;
-              setMovieType(v === '' ? undefined : Number(v));
+              const nextType = v === '' ? undefined : Number(v);
+              setMovieType(nextType);
+              if (nextType === 2) {
+                setDuration('');
+              }
+              if (nextType === 1 && !totalEpisodes.trim()) {
+                setTotalEpisodes('1');
+              }
             }}
           >
             <option value="">Chọn loại phim (tùy chọn)</option>
@@ -112,6 +119,7 @@ export default function AdminCreateMoviePage() {
             placeholder="Thời lượng (phút)"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
+            disabled={movieType === 2}
           />
           <select
             className="admin-input"

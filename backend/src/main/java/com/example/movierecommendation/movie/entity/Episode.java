@@ -26,6 +26,9 @@ public class Episode {
     @Column(name = "release_time")
     private LocalDateTime releaseTime;
 
+    @Column(name = "duration_minutes")
+    private Integer durationMinutes;
+
     public Long getId() {
         return id;
     }
@@ -64,5 +67,13 @@ public class Episode {
 
     public void setReleaseTime(LocalDateTime releaseTime) {
         this.releaseTime = releaseTime;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
     }
 }

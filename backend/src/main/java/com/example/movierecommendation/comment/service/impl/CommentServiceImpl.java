@@ -6,6 +6,7 @@ import com.example.movierecommendation.comment.entity.Comment;
 import com.example.movierecommendation.comment.mapper.CommentMapper;
 import com.example.movierecommendation.comment.repository.CommentRepository;
 import com.example.movierecommendation.comment.service.CommentService;
+import com.example.movierecommendation.common.exception.NotFoundException;
 import com.example.movierecommendation.movie.entity.Movie;
 import com.example.movierecommendation.movie.repository.MovieRepository;
 import com.example.movierecommendation.security.SecurityUtils;
@@ -35,9 +36,9 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public Page<CommentResponse> getCommentsByMovieId(Long movieId, Pageable pageable) {
         if (!movieRepository.existsById(movieId)) {
-            throw new IllegalArgumentException("Movie not found: " + movieId);
+            throw new NotFoundException("Không tìm thấy phim với id: " + movieId);
         }
-        return commentRepository.findByMovieIdOrderByCreatedAtDesc(movieId, pageable)
+        return commentRepository.findByMovie_IdOrderByCreatedAtDesc(movieId, pageable)
                 .map(CommentMapper::toResponse);
     }
 
@@ -45,11 +46,11 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentResponse create(Long movieId, CreateCommentRequest request) {
         String username = SecurityUtils.getCurrentUsername()
-                .orElseThrow(() -> new IllegalArgumentException("Authentication required"));
+                .orElseThrow(() -> new IllegalStateException("Yêu cầu đăng nhập."));
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng."));
         Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new IllegalArgumentException("Movie not found: " + movieId));
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy phim với id: " + movieId));
 
         Comment comment = new Comment();
         comment.setUser(user);
@@ -63,11 +64,11 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentResponse update(Long id, CreateCommentRequest request) {
         String username = SecurityUtils.getCurrentUsername()
-                .orElseThrow(() -> new IllegalArgumentException("Authentication required"));
+                .orElseThrow(() -> new IllegalStateException("Yêu cầu đăng nhập."));
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Comment not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy bình luận với id: " + id));
         if (!comment.getUser().getUsername().equals(username)) {
-            throw new IllegalArgumentException("Not authorized to update this comment");
+            throw new IllegalStateException("Bạn không có quyền sửa bình luận này.");
         }
         comment.setContent(request.getContent().trim());
         comment = commentRepository.save(comment);
@@ -78,11 +79,11 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public void delete(Long id) {
         String username = SecurityUtils.getCurrentUsername()
-                .orElseThrow(() -> new IllegalArgumentException("Authentication required"));
+                .orElseThrow(() -> new IllegalStateException("Yêu cầu đăng nhập."));
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Comment not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy bình luận với id: " + id));
         if (!comment.getUser().getUsername().equals(username)) {
-            throw new IllegalArgumentException("Not authorized to delete this comment");
+            throw new IllegalStateException("Bạn không có quyền xoá bình luận này.");
         }
         commentRepository.delete(comment);
     }

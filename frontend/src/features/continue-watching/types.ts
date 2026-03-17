@@ -4,6 +4,7 @@ export interface ContinueWatchingItem {
   movie: MovieCard;
   progressPercent?: number | null;
   episodeNumber?: number | null;
+  durationWatchedMinutes?: number | null;
 }
 
 export interface ContinueWatchingResponse {

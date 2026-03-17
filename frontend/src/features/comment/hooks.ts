@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createComment, fetchComments, type CreateCommentPayload } from './api';
+import { createComment, fetchComments, reportComment, type CreateCommentPayload } from './api';
 import type { CommentPage } from './types';
 
 const COMMENTS_KEY = 'comments';
@@ -22,6 +22,13 @@ export function useCreateComment(movieId: number) {
         queryKey: [COMMENTS_KEY, movieId]
       });
     }
+  });
+}
+
+export function useReportComment() {
+  return useMutation({
+    mutationFn: ({ commentId, reason }: { commentId: number; reason: string }) =>
+      reportComment(commentId, { reason })
   });
 }
 
