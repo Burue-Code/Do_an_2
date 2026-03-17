@@ -15,10 +15,15 @@ import com.example.movierecommendation.movie.repository.EpisodeRepository;
 import com.example.movierecommendation.movie.repository.MovieActorRepository;
 import com.example.movierecommendation.movie.repository.MovieDirectorRepository;
 import com.example.movierecommendation.movie.service.MovieQueryService;
+import com.example.movierecommendation.user.entity.User;
+import com.example.movierecommendation.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,13 +41,16 @@ public class MovieController {
     private final EpisodeRepository episodeRepository;
     private final MovieActorRepository movieActorRepository;
     private final MovieDirectorRepository movieDirectorRepository;
+    private final UserRepository userRepository;
 
     public MovieController(MovieQueryService movieQueryService, EpisodeRepository episodeRepository,
-                           MovieActorRepository movieActorRepository, MovieDirectorRepository movieDirectorRepository) {
+                           MovieActorRepository movieActorRepository, MovieDirectorRepository movieDirectorRepository,
+                           UserRepository userRepository) {
         this.movieQueryService = movieQueryService;
         this.episodeRepository = episodeRepository;
         this.movieActorRepository = movieActorRepository;
         this.movieDirectorRepository = movieDirectorRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -122,6 +130,36 @@ public class MovieController {
     public ResponseEntity<BaseResponse<List<MovieListResponse>>> getTrending(
             @RequestParam(defaultValue = "10") int limit) {
         return ResponseEntity.ok(BaseResponse.ok(movieQueryService.getTrending(limit)));
+    }
+
+    @GetMapping("/trending/personal")
+    public ResponseEntity<BaseResponse<List<MovieListResponse>>> getTrendingPersonal(
+            @RequestParam(defaultValue = "10") int limit) {
+        Long userId = getCurrentUserIdOrNull();
+        return ResponseEntity.ok(BaseResponse.ok(movieQueryService.getTrendingPersonalized(userId, limit)));
+    }
+
+    private Long getCurrentUserIdOrNull() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        String username = null;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else if (principal instanceof String) {
+            username = (String) principal;
+        }
+
+        if (username == null || username.isBlank()) {
+            return null;
+        }
+
+        return userRepository.findByUsername(username)
+                .map(User::getId)
+                .orElse(null);
     }
 }
 

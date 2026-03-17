@@ -22,5 +22,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long>, JpaSpecific
 
     @Query("SELECT DISTINCT mg.movie FROM MovieGenre mg WHERE mg.genre.id IN :genreIds AND mg.movie.id NOT IN :excludeIds ORDER BY mg.movie.ratingScore DESC")
     Page<Movie> findRecommendedByGenreIds(@Param("genreIds") List<Long> genreIds, @Param("excludeIds") List<Long> excludeIds, Pageable pageable);
+
+    @Query("SELECT DISTINCT mg.movie FROM MovieGenre mg WHERE mg.genre.id IN :genreIds AND mg.movie.id NOT IN :excludeIds ORDER BY mg.movie.ratingCount DESC")
+    Page<Movie> findTrendingByGenreIds(@Param("genreIds") List<Long> genreIds, @Param("excludeIds") List<Long> excludeIds, Pageable pageable);
 }
 

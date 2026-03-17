@@ -36,7 +36,23 @@ export async function fetchMovieById(id: number): Promise<MovieDetail> {
 }
 
 export async function fetchTrending(limit = 10): Promise<MovieCard[]> {
-  const { data } = await api.get<MovieCard[]>('/movies/trending', { params: { limit } });
+  const hasToken =
+    typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+
+  if (hasToken) {
+    try {
+      const { data } = await api.get<MovieCard[]>('/movies/trending/personal', {
+        params: { limit }
+      });
+      return data;
+    } catch {
+      // fallback sang trending thường nếu token hết hạn/endpoint lỗi
+    }
+  }
+
+  const { data } = await api.get<MovieCard[]>('/movies/trending', {
+    params: { limit }
+  });
   return data;
 }
 

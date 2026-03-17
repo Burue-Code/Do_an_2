@@ -18,5 +18,11 @@ public interface MovieQueryService {
     List<MovieListResponse> getNewest(int limit);
 
     List<MovieListResponse> getTrending(int limit);
+
+    /**
+     * Trending nhưng ưu tiên theo thể loại yêu thích của user (bám sở thích mới).
+     * Nếu user không có dữ liệu hành vi, nên fallback về getTrending().
+     */
+    List<MovieListResponse> getTrendingPersonalized(Long userId, int limit);
 }
 
