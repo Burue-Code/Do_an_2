@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS users (
     username      VARCHAR(50)  NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     full_name     VARCHAR(100) NOT NULL,
+    email         VARCHAR(100) NULL UNIQUE,
+    phone_number  VARCHAR(20) NULL UNIQUE,
     created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_users_role
         FOREIGN KEY (role_id) REFERENCES roles (role_id)

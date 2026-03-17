@@ -15,3 +15,4 @@ $ext = $src.Extension
     Copy-Item $src.FullName $dest -Force
 }
 Write-Host "Da tao video-01$ext .. video-100$ext tu $($src.Name)"
+
