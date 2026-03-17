@@ -45,7 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Token invalid - tiếp tục chuỗi filter, Spring Security sẽ trả 401 nếu cần authenticated
+            System.out.println("JWT FILTER ERROR: " + e.getMessage());
+            e.printStackTrace();
         }
         filterChain.doFilter(request, response);
     }

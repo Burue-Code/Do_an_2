@@ -28,3 +28,14 @@ export async function createComment(
   return data;
 }
 
+export interface ReportCommentPayload {
+  reason: string;
+}
+
+export async function reportComment(
+  commentId: number,
+  payload: ReportCommentPayload
+): Promise<void> {
+  await api.post(`/comments/${commentId}/report`, payload);
+}
+

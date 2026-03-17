@@ -175,6 +175,18 @@ export default function WatchPage() {
               </div>
             </section>
 
+            <section className={styles.interactSection}>
+              <h2 className={styles.sectionTitle}>Tương tác</h2>
+              <div className={styles.interactRow}>
+                <WatchlistButton movieId={movie.id} />
+                <LikeButton movieId={movie.id} />
+                <RatingStars movieId={movie.id} initialScore={movie.ratingScore ?? 0} initialCount={movie.ratingCount ?? 0} />
+                <button type="button" className={styles.shareBtn} onClick={() => navigator.clipboard?.writeText(window.location.href)}>
+                  Chia sẻ
+                </button>
+              </div>
+            </section>
+
             <section className={styles.castSection}>
               <h2 className={styles.sectionTitle}>Thông tin tham gia</h2>
               {castLoading ? (
@@ -208,23 +220,6 @@ export default function WatchPage() {
               ) : (
                 <p className={styles.placeholderText}>Chưa có thông tin diễn viên, đạo diễn.</p>
               )}
-            </section>
-
-            <section className={styles.interactSection}>
-              <h2 className={styles.sectionTitle}>Tương tác</h2>
-              <div className={styles.interactRow}>
-                <WatchlistButton movieId={movie.id} />
-                <LikeButton movieId={movie.id} />
-                <RatingStars movieId={movie.id} initialScore={movie.ratingScore ?? 0} initialCount={movie.ratingCount ?? 0} />
-                <button type="button" className={styles.shareBtn} onClick={() => navigator.clipboard?.writeText(window.location.href)}>
-                  Chia sẻ
-                </button>
-              </div>
-            </section>
-
-            <section className={styles.commentsSection}>
-              <h2 className={styles.sectionTitle}>Bình luận</h2>
-              <CommentList movieId={movie.id} />
             </section>
 
             {(isSeries || hasEpisodes) && (
@@ -267,6 +262,11 @@ export default function WatchPage() {
                   <p className={styles.placeholderText}>Chưa có phim đề xuất. Đăng nhập hoặc kiểm tra kết nối API.</p>
                 )}
               </div>
+            </section>
+
+            <section className={styles.commentsSection}>
+              <h2 className={styles.sectionTitle}>Bình luận</h2>
+              <CommentList movieId={movie.id} />
             </section>
           </div>
 

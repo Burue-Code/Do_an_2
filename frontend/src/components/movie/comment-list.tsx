@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useComments, useCreateComment } from '@/features/comment/hooks';
+import { useComments, useCreateComment, useReportComment } from '@/features/comment/hooks';
 import { useAuth } from '@/hooks/use-auth';
 
 interface CommentListProps {
@@ -34,6 +34,7 @@ export function CommentList({ movieId }: CommentListProps) {
   } = useComments(movieId, 0, 20);
 
   const createMutation = useCreateComment(movieId);
+  const reportMutation = useReportComment();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +46,53 @@ export function CommentList({ movieId }: CommentListProps) {
       setContent('');
     } catch {
       // error handled in UI
+    }
+  };
+
+  const handleReport = async (commentId: number) => {
+    if (!isAuthenticated) {
+      window.location.href = '/login';
+      return;
+    }
+
+    const presets = [
+      'Nội dung xúc phạm / thô tục',
+      'Spam / quảng cáo',
+      'Nội dung không liên quan tới phim',
+      'Chứa thông tin nhạy cảm / spoil quá nhiều',
+      'Khác (tự nhập lý do...)'
+    ];
+
+    const menu =
+      'Chọn lý do báo cáo (nhập số 1–5 hoặc tự nhập lý do):\n' +
+      presets.map((r, i) => `${i + 1}. ${r}`).join('\n');
+
+    let input = window.prompt(menu);
+    if (!input) return;
+
+    input = input.trim();
+
+    let reason: string;
+    const num = Number(input);
+    if (Number.isInteger(num) && num >= 1 && num <= presets.length) {
+      reason = presets[num - 1];
+      if (num === presets.length) {
+        const custom = window.prompt('Nhập lý do chi tiết:');
+        const trimmedCustom = custom?.trim();
+        if (!trimmedCustom) return;
+        reason = trimmedCustom;
+      }
+    } else {
+      reason = input;
+    }
+
+    if (!reason || reportMutation.isPending) return;
+
+    try {
+      await reportMutation.mutateAsync({ commentId, reason });
+      alert('Đã gửi báo cáo bình luận.');
+    } catch {
+      alert('Không thể gửi báo cáo. Vui lòng thử lại sau.');
     }
   };
 
@@ -125,6 +173,14 @@ export function CommentList({ movieId }: CommentListProps) {
                 </div>
               </div>
               <p className="movie-comment-item-content">{comment.content}</p>
+              <button
+                type="button"
+                className="movie-comment-report-button"
+                onClick={() => handleReport(comment.id)}
+                disabled={reportMutation.isPending}
+              >
+                Báo cáo
+              </button>
             </article>
           ))}
       </div>

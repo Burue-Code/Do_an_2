@@ -1,20 +1,21 @@
 package com.example.movierecommendation.movie.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+public class AdminScheduleResponse {
 
-public class AdminScheduleRequest {
-
-    @NotNull
+    private Long id;
     private Long movieId;
-
-    @NotBlank
+    private String movieTitle;
     private String dayOfWeek;
-
-    @NotBlank
     private String airTime;
-
     private String note;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getMovieId() {
         return movieId;
@@ -22,6 +23,14 @@ public class AdminScheduleRequest {
 
     public void setMovieId(Long movieId) {
         this.movieId = movieId;
+    }
+
+    public String getMovieTitle() {
+        return movieTitle;
+    }
+
+    public void setMovieTitle(String movieTitle) {
+        this.movieTitle = movieTitle;
     }
 
     public String getDayOfWeek() {
@@ -48,3 +57,4 @@ public class AdminScheduleRequest {
         this.note = note;
     }
 }
+

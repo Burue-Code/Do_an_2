@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getPosterUrl } from '@/lib/image';
 import type { MovieDetail as MovieDetailType } from '@/features/movie/types';
+import { useMovieCast } from '@/features/movie/hooks';
 import { CommentList } from './comment-list';
 import { RatingStars } from './rating-stars';
 import { LikeButton } from './like-button';
@@ -45,6 +46,10 @@ export function MovieDetail({
 }: MovieDetailProps) {
   const posterUrl = getPosterUrl(movie.poster);
   const movieTypeLabel = getMovieTypeLabel(movie.movieType);
+  const { data: cast, isLoading: castLoading, isError: castError } = useMovieCast(movie.id);
+  const actors = cast?.actors ?? [];
+  const directors = cast?.directors ?? [];
+  const hasCast = !castError && (actors.length > 0 || directors.length > 0);
 
   return (
     <article className="movie-detail" aria-label={`Chi tiết phim: ${movie.title}`}>
@@ -138,6 +143,32 @@ export function MovieDetail({
           )}
         </div>
       </div>
+
+      {hasCast && (
+        <section className="movie-detail-episodes" aria-labelledby="cast-heading">
+          <h2 id="cast-heading" className="movie-detail-section-title">
+            Thông tin tham gia
+          </h2>
+          {castLoading ? (
+            <p className="movie-comment-muted">Đang tải thông tin diễn viên, đạo diễn...</p>
+          ) : (
+            <div className="movie-detail-extra-meta">
+              {directors.length > 0 && (
+                <div style={{ marginBottom: '0.5rem' }}>
+                  <strong>Đạo diễn:</strong>{' '}
+                  {directors.map((d) => d.fullName).join(', ')}
+                </div>
+              )}
+              {actors.length > 0 && (
+                <div>
+                  <strong>Diễn viên:</strong>{' '}
+                  {actors.map((a) => a.fullName).join(', ')}
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+      )}
 
       {showEpisodes && (
         <MovieDetailEpisodes

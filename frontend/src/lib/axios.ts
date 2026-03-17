@@ -43,5 +43,28 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    const status = error?.response?.status;
+    // Ưu tiên lấy message từ response để UI hiển thị đúng (thay vì "Request failed with status code ...")
+    const serverMessage = error?.response?.data?.message;
+    if (typeof serverMessage === 'string' && serverMessage.trim()) {
+      error.message = serverMessage;
+    }
+    if (typeof window !== 'undefined' && status === 401) {
+      const url = String(error?.config?.url ?? '');
+      // Chỉ auto-logout/redirect khi request xác minh session (me) bị 401.
+      // Các API khác (kể cả /admin/**) trả 401 thì để UI tự hiển thị lỗi, tránh "đá ra luôn".
+      if (url.startsWith('/auth/me')) {
+        try {
+          localStorage.removeItem('accessToken');
+        } catch {
+          // ignore
+        }
+        if (!window.location.pathname.startsWith('/login')) {
+          window.location.href = '/login';
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
 );

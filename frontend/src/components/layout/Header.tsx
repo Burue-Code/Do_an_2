@@ -92,6 +92,9 @@ export function Header() {
           <Link href="/movies?menu=phim-moi" className={styles.navLink}>
             Phim mới
           </Link>
+          <Link href="/schedules" className={styles.navLink}>
+            Lịch chiếu
+          </Link>
           <Link href="/movies?menu=top-phim" className={styles.navLink}>
             Top phim
           </Link>

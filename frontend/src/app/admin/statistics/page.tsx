@@ -65,11 +65,11 @@ export default function AdminStatisticsPage() {
               <p className="admin-stat-value">{overview.totalLikes}</p>
             </div>
             <div className="admin-stat-card">
-              <p className="admin-stat-label">Watchlist items</p>
+              <p className="admin-stat-label">Phim được thêm vào danh sách xem sau</p>
               <p className="admin-stat-value">{overview.totalWatchlistItems}</p>
             </div>
             <div className="admin-stat-card">
-              <p className="admin-stat-label">Watch logs</p>
+              <p className="admin-stat-label">Lượt xem được ghi nhận</p>
               <p className="admin-stat-value">{overview.totalWatchLogs}</p>
             </div>
           </div>
