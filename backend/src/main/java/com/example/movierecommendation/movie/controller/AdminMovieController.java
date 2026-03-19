@@ -86,12 +86,12 @@ public class AdminMovieController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<ApiMessage>> createMovie(@Valid @RequestBody AdminMovieRequest request) {
+    public ResponseEntity<BaseResponse<Long>> createMovie(@Valid @RequestBody AdminMovieRequest request) {
         Movie movie = new Movie();
         applyRequestToEntity(request, movie);
         movieRepository.save(movie);
         applyRelations(request, movie);
-        return ResponseEntity.ok(BaseResponse.ok(ApiMessage.ok("Movie created")));
+        return ResponseEntity.ok(BaseResponse.ok(movie.getId(), "Movie created"));
     }
 
     @PutMapping("/{id}")
