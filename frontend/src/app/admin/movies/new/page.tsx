@@ -50,7 +50,7 @@ export default function AdminCreateMoviePage() {
         : null;
 
     try {
-      await createMovie.mutateAsync({
+      const createdId = await createMovie.mutateAsync({
         title: title.trim(),
         description: description.trim() || null,
         releaseYear,
@@ -65,6 +65,9 @@ export default function AdminCreateMoviePage() {
       });
 
       setSubmitMessage('Đã lưu phim thành công.');
+      if (createdId && Number.isFinite(Number(createdId))) {
+        router.push(`/admin/movies/${createdId}`);
+      }
     } catch {
       setSubmitMessage('Không thể lưu phim. Vui lòng thử lại.');
     }

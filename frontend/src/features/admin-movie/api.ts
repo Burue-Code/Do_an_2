@@ -36,8 +36,9 @@ export interface AdminSchedulePayload {
   note?: string | null;
 }
 
-export async function createMovie(payload: AdminMoviePayload): Promise<void> {
-  await api.post('/admin/movies', payload);
+export async function createMovie(payload: AdminMoviePayload): Promise<number> {
+  const { data } = await api.post<number>('/admin/movies', payload);
+  return data;
 }
 
 export async function updateMovie(id: number, payload: AdminMoviePayload): Promise<void> {

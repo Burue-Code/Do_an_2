@@ -46,6 +46,9 @@ public class AdminScheduleController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<AdminScheduleResponse>> create(@Valid @RequestBody AdminScheduleRequest request) {
+        if (request.getMovieId() == null) {
+            throw new IllegalArgumentException("movieId is required");
+        }
         Movie movie = movieRepository.findById(request.getMovieId())
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
         Schedule s = new Schedule();
@@ -64,9 +67,11 @@ public class AdminScheduleController {
     ) {
         Schedule s = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
-        Movie movie = movieRepository.findById(request.getMovieId())
-                .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
-        s.setMovie(movie);
+        if (request.getMovieId() != null) {
+            Movie movie = movieRepository.findById(request.getMovieId())
+                    .orElseThrow(() -> new IllegalArgumentException("Movie not found"));
+            s.setMovie(movie);
+        }
         s.setDayOfWeek(request.getDayOfWeek());
         s.setAirTime(request.getAirTime());
         s.setNote(request.getNote());

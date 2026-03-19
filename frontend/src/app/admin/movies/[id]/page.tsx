@@ -179,19 +179,34 @@ export default function AdminMovieDetailPage() {
   // Gợi ý số tập tiếp theo dựa trên danh sách tập hiện có của admin
   useEffect(() => {
     if (!movie) return;
-    if (movie.movieType !== 2) return;
     if (editingEpisodeId != null) return;
-    if (episodeNumber && Number(episodeNumber) > 0) return;
-    if (!adminEpisodes || !adminEpisodes.length) {
-      setEpisodeNumber('1');
+
+    // Phim bộ: luôn tự động gợi ý số tập tiếp theo sau mỗi lần danh sách tập thay đổi
+    if (movie.movieType === 2) {
+      if (!adminEpisodes || !adminEpisodes.length) {
+        if (episodeNumber !== '1') {
+          setEpisodeNumber('1');
+        }
+        return;
+      }
+      const maxEpisode = adminEpisodes.reduce((max, e) => {
+        const num = typeof e.episodeNumber === 'number' ? e.episodeNumber : Number(e.episodeNumber ?? 0);
+        return Number.isFinite(num) && num > max ? num : max;
+      }, 0);
+      const nextEpisode = (maxEpisode || 0) + 1;
+      const nextStr = String(nextEpisode);
+      if (episodeNumber !== nextStr) {
+        setEpisodeNumber(nextStr);
+      }
       return;
     }
-    const maxEpisode = adminEpisodes.reduce((max, e) => {
-      const num = typeof e.episodeNumber === 'number' ? e.episodeNumber : Number(e.episodeNumber ?? 0);
-      return Number.isFinite(num) && num > max ? num : max;
-    }, 0);
-    const nextEpisode = (maxEpisode || 0) + 1;
-    setEpisodeNumber(String(nextEpisode));
+
+    // Phim lẻ: nếu chưa có tập nào thì mặc định = 1; nếu đã có tập thì để trống (bắt user sửa/xóa tập hiện tại)
+    if (!adminEpisodes || !adminEpisodes.length) {
+      setEpisodeNumber('1');
+    } else if (!episodeNumber) {
+      setEpisodeNumber('');
+    }
   }, [movie, adminEpisodes, editingEpisodeId, episodeNumber]);
 
   function openEditInfoForm(m: MovieDetailType) {
@@ -760,15 +775,18 @@ export default function AdminMovieDetailPage() {
       </section>
       <section className="admin-section">
         <h2 className="admin-section-title">Tập phim</h2>
-        {movie.movieType !== 2 && <p>Phim lẻ – không có danh sách tập.</p>}
-        {movie.movieType === 2 && (isEpisodesLoading || isAdminEpisodesLoading) && (
+        {movie.movieType !== 2 && (
+          <p>
+            Phim lẻ – bạn có thể thêm <strong>01 tập</strong> với Video URL để hệ thống phát phim.
+          </p>
+        )}
+        {(isEpisodesLoading || isAdminEpisodesLoading) && (
           <p>Đang tải danh sách tập...</p>
         )}
-        {movie.movieType === 2 && (isEpisodesError || isAdminEpisodesError) && (
+        {(isEpisodesError || isAdminEpisodesError) && (
           <p>Không thể tải danh sách tập. Vui lòng thử lại sau.</p>
         )}
-        {movie.movieType === 2 &&
-          adminEpisodes &&
+        {adminEpisodes &&
           !isEpisodesLoading &&
           !isAdminEpisodesLoading &&
           !isEpisodesError &&
@@ -828,7 +846,7 @@ export default function AdminMovieDetailPage() {
             </table>
           )}
 
-        {movie.movieType === 2 && (
+        {(movie.movieType === 2 || !adminEpisodes || adminEpisodes.length === 0) && (
           <form
             className="admin-form"
             onSubmit={(e) => {
