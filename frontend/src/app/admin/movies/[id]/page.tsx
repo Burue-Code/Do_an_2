@@ -791,12 +791,13 @@ export default function AdminMovieDetailPage() {
           !isAdminEpisodesLoading &&
           !isEpisodesError &&
           !isAdminEpisodesError && (
+            <div className="admin-table-wrap">
             <table className="admin-table admin-section-table">
               <thead>
                 <tr>
                   <th>ID</th>
                   <th>Tập</th>
-                  <th>Video URL</th>
+                  <th className="admin-table-url-cell">Video URL</th>
                   <th>Ngày phát hành</th>
                   <th>Hành động</th>
                 </tr>
@@ -806,7 +807,11 @@ export default function AdminMovieDetailPage() {
                   <tr key={e.id}>
                     <td>{e.id}</td>
                     <td>{e.episodeNumber}</td>
-                    <td>{e.videoUrl}</td>
+                    <td className="admin-table-url-cell">
+                      <span className="admin-table-url" title={e.videoUrl}>
+                        {e.videoUrl}
+                      </span>
+                    </td>
                     <td>{e.releaseTime || '-'}</td>
                     <td className="admin-table-actions">
                       <button
@@ -844,9 +849,10 @@ export default function AdminMovieDetailPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
 
-        {(movie.movieType === 2 || !adminEpisodes || adminEpisodes.length === 0) && (
+        {(movie.movieType === 2 || !adminEpisodes || adminEpisodes.length === 0 || editingEpisodeId != null) && (
           <form
             className="admin-form"
             onSubmit={(e) => {

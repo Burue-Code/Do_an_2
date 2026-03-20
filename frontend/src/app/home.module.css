@@ -17,7 +17,7 @@
 /* Hero */
 .hero {
   position: relative;
-  min-height: 380px;
+  min-height: 490px;
   border-radius: 0.75rem;
   overflow: hidden;
   margin-bottom: 2rem;
@@ -35,6 +35,7 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
+  min-height: 490px;
   background: linear-gradient(to right, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.6) 50%, transparent 100%);
 }
 
@@ -44,8 +45,14 @@
 
 .heroContent {
   position: relative;
-  padding: 3rem 2rem;
+  min-height: 490px;
+  padding: 2rem;
   max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  transform: translate(37px, -20px);
 }
 
 .heroTitle {
