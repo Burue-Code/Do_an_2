@@ -179,7 +179,7 @@ export function VideoPlayer({ src, poster, title, onProgressChange, initialPosit
     return (
       <div className={styles.playerWrap}>
         <div className={styles.placeholder}>
-          <p>Chưa có nguồn phát. Thêm file video vào /public/videos/ hoặc cấu hình URL.</p>
+          <p>Hiện chưa có video cho tập này. Vui lòng quay lại sau.</p>
         </div>
       </div>
     );
@@ -193,7 +193,7 @@ export function VideoPlayer({ src, poster, title, onProgressChange, initialPosit
     >
       {loadError && (
         <div className={styles.placeholder}>
-          <p>Không thể tải video. Kiểm tra file tại /public/videos/ hoặc đường dẫn nguồn.</p>
+          <p>Không phát được video. Bạn hãy thử tải lại trang hoặc chọn tập khác.</p>
         </div>
       )}
       <video
