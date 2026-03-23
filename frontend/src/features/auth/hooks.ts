@@ -85,10 +85,21 @@ export function useChangePassword() {
   });
 }
 
+const GENRE_ONBOARDING_DISMISS_PREFIX = 'genreOnboarding:dismissed:';
+
+export function clearGenreOnboardingDismissForUser(userId: number) {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(`${GENRE_ONBOARDING_DISMISS_PREFIX}${userId}`);
+}
+
 export function useLogout() {
   const queryClient = useQueryClient();
   return useCallback(() => {
     if (typeof window !== 'undefined') {
+      const me = queryClient.getQueryData(AUTH_ME_KEY) as { id?: number } | null | undefined;
+      if (me?.id != null) {
+        clearGenreOnboardingDismissForUser(me.id);
+      }
       localStorage.removeItem('accessToken');
     }
     queryClient.setQueryData(AUTH_ME_KEY, null);

@@ -115,7 +115,7 @@ public class AuthServiceImpl implements AuthService {
 
         AuthResponse response = new AuthResponse();
         response.setAccessToken(token);
-        response.setUser(userMapper.toUserProfileResponse(user));
+        response.setUser(toUserProfileWithFavoriteGenres(user));
         return response;
     }
 
@@ -164,7 +164,7 @@ public class AuthServiceImpl implements AuthService {
 
         AuthResponse response = new AuthResponse();
         response.setAccessToken(token);
-        response.setUser(userMapper.toUserProfileResponse(user));
+        response.setUser(toUserProfileWithFavoriteGenres(user));
         return response;
     }
 
@@ -194,6 +194,10 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
+        return toUserProfileWithFavoriteGenres(user);
+    }
+
+    private com.example.movierecommendation.user.dto.UserProfileResponse toUserProfileWithFavoriteGenres(User user) {
         com.example.movierecommendation.user.dto.UserProfileResponse response = userMapper.toUserProfileResponse(user);
         List<Long> genreIds = userGenreRepository.findByUser_Id(user.getId()).stream()
                 .map(ug -> ug.getGenre().getId())

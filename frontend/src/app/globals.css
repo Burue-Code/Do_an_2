@@ -1455,6 +1455,132 @@ body {
   font-weight: 500;
 }
 
+/* Popup chọn thể loại khi đăng nhập (chưa có thể loại yêu thích) */
+.genre-onboarding-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(2, 6, 23, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.genre-onboarding-panel {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: min(90vh, 640px);
+  overflow-y: auto;
+  padding: 1.5rem;
+  padding-top: 1.75rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(30, 27, 75, 0.5));
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+.genre-onboarding-close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.4);
+  color: #94a3b8;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.genre-onboarding-close:hover:not(:disabled) {
+  color: #f9fafb;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.genre-onboarding-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.genre-onboarding-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f9fafb;
+  margin: 0 2.5rem 0.5rem 0;
+}
+
+.genre-onboarding-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+}
+
+.genre-onboarding-form {
+  margin: 0;
+}
+
+.genre-onboarding-error {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: #f87171;
+}
+
+.genre-onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.genre-onboarding-btn-cancel {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(148, 163, 184, 0.08);
+  color: #f1f5f9;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.genre-onboarding-btn-cancel:hover:not(:disabled) {
+  background: rgba(226, 232, 240, 0.18);
+  border-color: rgba(226, 232, 240, 0.55);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.genre-onboarding-btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.genre-onboarding-submit {
+  margin-top: 0;
+  margin-left: auto;
+}
+
 .admin-suggestions {
   position: absolute;
   top: 100%;

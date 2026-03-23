@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { QueryProvider } from '@/providers/query-provider';
+import { FavoriteGenreOnboarding } from '@/components/auth/favorite-genre-onboarding';
 import { AuthProvider } from '@/providers/auth-provider';
 
 export const metadata = {
@@ -17,7 +18,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="app-root">
         <QueryProvider>
           <AuthProvider>
-              <Header />
+            <FavoriteGenreOnboarding />
+            <Header />
             <main className="app-main">{children}</main>
             <Footer />
             <ScrollToTop />
