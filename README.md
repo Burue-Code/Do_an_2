@@ -36,7 +36,9 @@ movie-recommendation-system/
 ├── docs/                       # Documentation
 │   ├── resources/             # Tech stack, architecture
 │   └── database/              # Database schema
-└── docker-compose.yml         # Container orchestration
+├── docker-compose.yml         # Container orchestration
+└── AGENTS.md                  # Development guidelines
+
 ```
 
 ## 🛠️ Yêu Cầu Hệ Thống
@@ -306,7 +308,7 @@ docker-compose -e "PORT=3001" up
 
 ## 📞 Support & Contact
 
-- **Issues:** [GitHub Issues](https://github.com/your-repo/issues)
+- **Issues:** [GitHub Issues](https://github.com/Burue-Code/Do_an_2)
 - **Documentation:** Xem folder `docs/`
 - **Questions:** Tham khảo `AGENTS.md` để hiểu quy tắc phát triển
 
